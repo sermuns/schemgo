@@ -1,37 +1,24 @@
 package main
 
 import (
-	"bytes"
-	"log"
-	"os"
-
-	"github.com/ajstarks/svgo"
+	"github.com/sermuns/schemgo/drawing"
 )
 
 const (
 	width      = 500
 	height     = 500
-	outputFile = "out.svg"
+	outputFile = "index.html"
 )
 
 func main() {
-	var outputBuffer bytes.Buffer
+	s := drawing.NewSchematic(width, height).
+		ChangeBrushColor("red").
+		Circle(50).Left(100).
+		ChangeBrushColor("blue").
+		Circle(30).Right(200)
 
-	canvas := svg.New(&outputBuffer)
-	canvas.Start(width, height)
-	canvas.Circle(width/2, height/2, 100)
-	style := `
-		fill: white;
-		dominant-baseline: central;
-		text-anchor: middle;
-		font-size: 30px;
-		font-family: New Computer Modern Math;
-	`
-	canvas.Text(width/2, height/2, "Hello, SVG", style)
-	canvas.End()
-
-	file, _ := os.Create(outputFile)
-
-	file.Write(outputBuffer.Bytes())
-	log.Printf("Written %d bytes\n", outputBuffer.Len())
+	err := s.End(outputFile)
+	if err != nil {
+		panic(err)
+	}
 }
