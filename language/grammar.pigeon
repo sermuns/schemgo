@@ -1,0 +1,32 @@
+string = `"` [a-zA-Z0-9]+ `"`
+
+// common properties
+Id          = `id` `:` string
+Label       = `label` `:` string
+
+// Match the 'current' directive (matches current(color: red))
+Current     = `current` `(` `color` `:` [a-zA-Z0-9]+ `)`
+
+// Match the 'battery_cell' component (matches battery_cell())
+Battery     = `battery` `()`
+
+// Match the 'resistor' component (matches resistor(val: 2k, id: `res1`))
+Resistor    = `resistor` `(` `val` `:` [a-zA-Z0-9]+ `,` `id` `:` `"` [a-zA-Z0-9]+ `"` `)`
+
+// Match the 'line' component (matches line(id: `line1`))
+Line        = `line` `(` `id` `:` string `)`
+
+// Match direction methods like .up(), .down(), .left(), .right()
+Direction   = `up` / `down` / `left` / `right`
+
+// Match the '#set current' directive (matches #set current(color: red))
+Set         = `#set` `(` Current `)`
+
+// Match component methods like .up() on the components (matches battery_cell().up())
+Component   = Battery / Resistor / Line
+
+// A method call consists of a component followed by a direction method
+MethodCall  = Component Direction
+
+// The entire program consists of optional set statements followed by components and method calls
+Program     = Set* Component* MethodCall*

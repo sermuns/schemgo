@@ -1,0 +1,10 @@
+set(
+	current(color: red)
+)
+
+battery_cell().up()
+line(id: "line1").up()
+current(label: "I_{up}").at("line1")
+resistor(val: "2k", id: "res1").right()
+line(id: "line2").down()
+current(label: "I_{down}").at("line2")
