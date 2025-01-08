@@ -2,7 +2,9 @@ package drawing
 
 import (
 	"bytes"
+	"fmt"
 	"os"
+	"strings"
 
 	"github.com/ajstarks/svgo"
 )
@@ -27,6 +29,21 @@ func NewSchematic(width, height int) *Schematic {
 	}
 }
 
+func (s *Schematic) ChangeCanvasSize(w, h int) *Schematic {
+	newSvgTag := fmt.Sprintf(`<svg width="%d" height="%d" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">`, w, h)
+	modifiedLines := strings.Split(s.Buffer.String(), "\n")
+	for i, line := range modifiedLines {
+		if strings.HasPrefix(line, "<svg") {
+			fmt.Println("mdoifying!")
+			modifiedLines[i] = newSvgTag
+			s.Buffer.Reset()
+			s.Buffer.WriteString(strings.Join(modifiedLines, "\n"))
+			return s
+		}
+	}
+	panic("Couldn't find <svg> tag!")
+}
+
 func (s *Schematic) ChangeBrushColor(color string) *Schematic {
 	s.Color = color
 	return s
@@ -47,7 +64,6 @@ func (s *Schematic) Right(units int) *Schematic {
 	return s
 }
 
-// Up moves the brush up and updates the position, supports chaining.
 func (s *Schematic) Up(units int) *Schematic {
 	s.Y -= units
 	return s
