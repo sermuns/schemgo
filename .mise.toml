@@ -1,6 +1,11 @@
-[tasks.go]
-run = "go run ."
+[vars]
+input = 'examples/simple.schemgo'
+
+[tasks.simple]
+alias = 's'
+run = 'go run . --input {{ vars.input}}'
 sources = [
 	'**/*.go',
-	'**/*.schemgo'
+	'{{ vars.input }}'
 ]
+outputs = 'index.html'

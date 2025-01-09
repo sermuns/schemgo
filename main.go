@@ -1,21 +1,35 @@
 package main
 
 import (
-	"github.com/sermuns/schemgo/drawing"
-	// "fmt"
+	"flag"
+	"fmt"
+	"time"
+	"os"
 
+	"github.com/sermuns/schemgo/drawing"
 	"github.com/sermuns/schemgo/parsing"
 )
 
 const (
-	width             = 500
-	height            = 500
-	outputFile        = "index.html"
-	schematicFilePath = "./examples/simple.schemgo"
+	width      = 500
+	height     = 500
+	outputFile = "index.html"
 )
 
 func main() {
-	schematic, err := parsing.ReadSchematic(schematicFilePath)
+	start := time.Now()
+
+	schematicFilePath := flag.String("input", "", "path to .schemgo file")
+	flag.Parse()
+
+	// Check if the input flag is provided
+	if *schematicFilePath == "" {
+		fmt.Println("Error: -input flag is required")
+		flag.Usage() // Prints the usage information
+		os.Exit(1)   // Exits the program with a non-zero status
+	}
+
+	schematic, err := parsing.ReadSchematic(*schematicFilePath)
 	if err != nil {
 		panic(err)
 	}
@@ -30,4 +44,5 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	fmt.Printf("Parsed `%s` in %s\n", *schematicFilePath, time.Since(start))
 }
