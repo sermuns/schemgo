@@ -1,3 +1,4 @@
-battery_cell(color="red")
-resistor(id="r1", label="200 ohm")
-line()
+battery().right(200).label("200 V")
+line.up
+resistor.left(200)
+line.down
