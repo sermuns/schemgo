@@ -1,0 +1,6 @@
+[tasks.go]
+run = "go run ."
+sources = [
+	'**/*.go',
+	'**/*.schemgo'
+]
