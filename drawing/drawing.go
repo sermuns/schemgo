@@ -13,7 +13,8 @@ import (
 )
 
 const (
-	defaultUnit        = 100
+	unitLength         = 100
+	defaultLength      = 1 * unitLength
 	defaultStrokeWidth = 5
 )
 
@@ -28,31 +29,79 @@ func (s *Schematic) path(d string) {
 	styles := strings.Join([]string{
 		"stroke:" + s.Color,
 		"stroke-width:" + strconv.Itoa(defaultStrokeWidth),
+		"fill: none",
 	}, ";")
 
 	s.Canvas.Path(d, styles)
 }
 
-func (s *Schematic) battery(x1, y1, x2, y2 int) {
-	const (
-		termGap       = defaultUnit / 6
-		negTermHeight = defaultUnit / 4
-		posTermHeight = defaultUnit / 2
+// Element that connects two nodes.
+// `path` must be in horizontal, left-to-right layout,
+// this function takes care of rotation.
+func (s *Schematic) biNodal(x1, y1, x2, y2 int, path string) {
+	angle := math.Atan2(
+		float64(y2-y1),
+		float64(x2-x1),
 	)
-
-	// s.Canvas.Circle(x1, y1, 10)
-	// s.Canvas.Circle(x2, y2, 10)
-
-	angle := math.Atan2(float64(y2-y1), float64(x2-x1))
-	distance := int(math.Round(math.Hypot(float64(x2-x1), float64(y2-y1))))
-	negTermX := x1 + distance/2 - termGap/2
-	posTermX := negTermX + termGap
 
 	s.Canvas.Gtransform(fmt.Sprintf(
 		"rotate(%d, %d, %d)",
 		int(angle*180/math.Pi), x1, y1,
 	))
-	s.path(fmt.Sprintf(`
+	s.path(path)
+	s.Canvas.Gend()
+}
+
+func getIntegerDistance(x1, y1, x2, y2 int) int {
+	return int(math.Round(math.Hypot(float64(y2-y1), float64(x2-x1))))
+}
+
+func (s *Schematic) resistor(x1, y1, x2, y2 int) {
+	const (
+		height = defaultLength / 4
+		width  = defaultLength / 2
+	)
+
+	distance := getIntegerDistance(x1, y1, x2, y2)
+
+	path := fmt.Sprintf(`
+		M %d %d
+		L %d %d
+		L %d %d
+		L %d %d
+		L %d %d
+		L %d %d
+		L %d %d
+		M %d %d
+		L %d %d
+		`,
+		x1, y1,
+		x1+distance/2-width/2, y1,
+		x1+distance/2-width/2, y1+height/2,
+		x1+distance/2+width/2, y1+height/2,
+		x1+distance/2+width/2, y1-height/2,
+		x1+distance/2-width/2, y1-height/2,
+		x1+distance/2-width/2, y1,
+		x1+distance/2+width/2, y1,
+		x1+distance, y1,
+	)
+
+	s.biNodal(x1, y1, x2, y2, path)
+
+}
+
+func (s *Schematic) battery(x1, y1, x2, y2 int) {
+	const (
+		termGap       = defaultLength / 6
+		negTermHeight = defaultLength / 4
+		posTermHeight = defaultLength / 2
+	)
+
+	distance := getIntegerDistance(x1, y1, x2, y2)
+	negTermX := x1 + distance/2 - termGap/2
+	posTermX := negTermX + termGap
+
+	path := fmt.Sprintf(`
 		M %d %d
 		L %d %d
 		M %d %d
@@ -70,28 +119,20 @@ func (s *Schematic) battery(x1, y1, x2, y2 int) {
 		posTermX, y1+posTermHeight/2,
 		posTermX, y1,
 		x1+distance, y1,
-	))
-	s.Canvas.Gend()
+	)
+
+	s.biNodal(x1, y1, x2, y2, path)
 }
 
 func (s *Schematic) AddElement(e *parsing.Element) {
 
-	switch e.Type {
-	case "battery":
-		defer func(prevX int, prevY int, X *int, Y *int) {
-			s.battery(prevX, prevY, *X, *Y)
-		}(s.X, s.Y, &s.X, &s.Y)
-	case "line":
-		defer func(prevX int, prevY int, X *int, Y *int) {
-			s.Line(prevX, prevY, *X, *Y)
-		}(s.X, s.Y, &s.X, &s.Y)
-	}
+	prevX, prevY := s.X, s.Y
 
 	for _, action := range e.Actions {
 
-		value := action.Value
+		value := action.Units * unitLength
 		if value == 0 {
-			value = defaultUnit
+			value = defaultLength
 		}
 
 		switch action.Type {
@@ -105,6 +146,15 @@ func (s *Schematic) AddElement(e *parsing.Element) {
 			s.Translate(0, value)
 		}
 	}
+
+	switch e.Type {
+	case "resistor":
+		s.resistor(prevX, prevY, s.X, s.Y)
+	case "battery":
+		s.battery(prevX, prevY, s.X, s.Y)
+	case "line":
+		s.Line(prevX, prevY, s.X, s.Y)
+	}
 }
 
 func NewSchematic(width, height int) *Schematic {
@@ -112,8 +162,8 @@ func NewSchematic(width, height int) *Schematic {
 	canvas := svg.New(buffer)
 	canvas.Start(width, height)
 	return &Schematic{
-		X:      width / 2,
-		Y:      height / 2,
+		X:      defaultLength / 2,
+		Y:      defaultLength * 3,
 		Color:  "black",
 		Canvas: canvas,
 		Buffer: buffer,

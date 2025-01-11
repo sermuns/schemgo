@@ -1,4 +1,6 @@
-battery().right(200).label("200 V")
-line.up
-resistor.left(200)
-line.down
+battery.right
+battery.right
+line.up(2)
+resistor.left
+resistor.left
+line.down(2)

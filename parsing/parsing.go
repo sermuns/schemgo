@@ -30,7 +30,7 @@ type Property struct {
 
 type Action struct {
 	Type  string `'.' @Ident`
-	Value int    `('(' @Int? ')')?`
+	Units int    `('(' @Int? ')')?`
 }
 
 type Value interface{ value() }
