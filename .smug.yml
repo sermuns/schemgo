@@ -1,0 +1,14 @@
+session: schemgo
+
+root: .
+
+windows:
+  - name: vim
+
+  - name: penguin
+    commands:
+      - penguin serve -q . --open
+
+  - name: watch
+    commands:
+      - mise watch simple
