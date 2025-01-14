@@ -1,6 +1,3 @@
-battery.right
-battery.right
-line.up(2)
-resistor.left
-resistor.left
-line.down(2)
+resistor.right(2.0)
+resistor.right(2.0)
+resistor.up(2.0)

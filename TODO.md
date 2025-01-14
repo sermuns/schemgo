@@ -1,0 +1,7 @@
+- [x] Move away from `svgo`
+- [x] Create svg struct
+- [x] Only contains path:
+- [x] Create path struct
+- [x] Contain array of commands
+- [x] Create command struct
+- [ ] Actions can be ints, not need decimal place

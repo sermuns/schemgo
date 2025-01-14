@@ -37,12 +37,11 @@ func main() {
 	s := drawing.NewSchematic(width, height)
 
 	for _, comp := range schematic.Elements {
+		// fmt.Printf("Adding %s\n", comp.Type)
 		s.AddElement(comp)
 	}
 
-	err = s.End(outputFile)
-	if err != nil {
-		panic(err)
-	}
+	s.End(outputFile)
+
 	fmt.Printf("Parsed `%s` in %s\n", *schematicFilePath, time.Since(start))
 }

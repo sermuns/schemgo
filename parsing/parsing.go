@@ -29,8 +29,8 @@ type Property struct {
 }
 
 type Action struct {
-	Type  string `'.' @Ident`
-	Units int    `('(' @Int? ')')?`
+	Type  string  `'.' @Ident`
+	Units float64 `('(' @Float? ')')?`
 }
 
 type Value interface{ value() }
