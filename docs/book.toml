@@ -1,9 +1,10 @@
 [book]
+title = "schemgo documentation"
+cname = "schemgo.samake.se"
 authors = ["sermuns"]
 language = "en"
 multilingual = false
 src = "src"
-title = "schemgo documentation"
 
 [build]
 build-dir = "public"
