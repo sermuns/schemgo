@@ -1,6 +1,12 @@
 [tools]
-"go" = "latest"
+go = "latest"
 "go:golang.org/x/tools/cmd/godoc" = "latest"
+mdbook = "latest"
+"ubi:badboy/mdbook-mermaid" = "latest"
+"ubi:tommilligan/mdbook-admonish" = "latest"
+"ubi:jonahgoldwastaken/mdbook-external-links" = "latest"
+"cargo:mdbook-autosummary" = "latest"
+
 
 [tasks.simple]
 alias = 's'
