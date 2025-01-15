@@ -24,13 +24,7 @@ type command struct {
 	pos     point
 }
 
-type Path struct {
-	commands []command
-}
-
-type Resistor struct {
-	start, end point
-}
+type Path []command
 
 type Schematic struct {
 	X, Y  float64
@@ -54,7 +48,7 @@ func createPath(input ...any) Path {
 			newCommand.pos.x = part.(float64)
 		case 2:
 			newCommand.pos.y = part.(float64)
-			newPath.commands = append(newPath.commands, newCommand)
+			newPath = append(newPath, newCommand)
 		}
 	}
 	return newPath
@@ -76,8 +70,8 @@ func (this *point) distanceTo(other point) float64 {
 
 func (path *Path) pivotAround(pivot point, angle float64) {
 	sin, cos := math.Sincos(angle)
-	for i := range path.commands {
-		path.commands[i].pos.pivotAround(pivot, sin, cos)
+	for i := range *path {
+		(*path)[i].pos.pivotAround(pivot, sin, cos)
 	}
 }
 
@@ -194,7 +188,7 @@ func (s *Schematic) Normalise() (width, height float64) {
 
 	// find bounds
 	for _, path := range s.paths {
-		for _, command := range path.commands {
+		for _, command := range *path {
 			minX = min(minX, command.pos.x)
 			minY = min(minY, command.pos.y)
 			maxX = max(maxX, command.pos.x)
@@ -204,9 +198,9 @@ func (s *Schematic) Normalise() (width, height float64) {
 
 	// apply translation to all paths
 	for _, path := range s.paths {
-		for i := range path.commands {
-			path.commands[i].pos.x -= minX - defaultStrokeWidth
-			path.commands[i].pos.y -= minY - defaultStrokeWidth
+		for i := range *path {
+			(*path)[i].pos.x -= minX - defaultStrokeWidth
+			(*path)[i].pos.y -= minY - defaultStrokeWidth
 		}
 	}
 
@@ -230,7 +224,7 @@ func (s *Schematic) End(outFilePath string) {
 	for _, path := range s.paths {
 		buf.WriteString(`<path `)
 		buf.WriteString(` d="`)
-		for _, command := range path.commands {
+		for _, command := range *path {
 			if command.penDown {
 				buf.WriteString("L ")
 			} else {
