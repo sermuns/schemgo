@@ -12,3 +12,5 @@ windows:
   - name: watch
     commands:
       - mise watch simple
+    after_start:
+      - eog build/simple.svg
