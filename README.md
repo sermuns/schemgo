@@ -11,9 +11,10 @@
 
 ## What is this?
 
+This tool generates electrical cirtcuit schematic diagram from a minimal language, heavily inspired by [Schemdraw](https://schemdraw.readthedocs.io/en/stable/).
+
 Very similar to [Schemdraw](https://schemdraw.readthedocs.io/en/stable/), but also accomplishes the same thing as [circuitikz](https://github.com/circuitikz/circuitikz).
 
-This tool generates electrical cirtcuit schematic diagram from a minimal language, heavily inspired by [Schemdraw](https://schemdraw.readthedocs.io/en/stable/).
 
 ## Quickstart
 
@@ -40,7 +41,11 @@ schemgo -i simple.schemgo -o simple.svg
 
 The circuit diagram is created as `simple.svg`:
 
-![simple circuit](docs/simple.svg)
+<!-- ![simple circuit](docs/simple.webp) -->
+<div align="center">
+<a href="docs/simple.svg"><img src="docs/simple.webp" alt="simple circuit" align="center" /></a>
+</div>
+
 
 > [!NOTE]
 > Only svg output is supported at the moment.
@@ -55,3 +60,4 @@ The circuit diagram is created as `simple.svg`:
 - [ ] Element attributes
   - [ ] ID for symbolic reference
 - [ ] Syntax highlighting
+- [ ] Exporting to pdf, png, jpg, webp
