@@ -10,19 +10,19 @@ import (
 	"github.com/sermuns/schemgo/parsing"
 )
 
-const (
-	outputFile = "out.svg"
-)
-
 func main() {
 	start := time.Now()
 
-	schematicFilePath := flag.String("input", "", "path to .schemgo file")
+	schematicFilePath := flag.String("input", "", "path to .schemgo")
+	flag.StringVar(schematicFilePath, "i", "", "shorthand for input")
+
+	outputFilePath := flag.String("output", "", "path to output")
+	flag.StringVar(outputFilePath, "o", "", "shorthand for output")
+
 	flag.Parse()
 
-	// Check if the input flag is provided
 	if *schematicFilePath == "" {
-		fmt.Println("Error: -input flag is required")
+		fmt.Println("Error: input flag is required")
 		flag.Usage() // Prints the usage information
 		os.Exit(1)   // Exits the program with a non-zero status
 	}
@@ -39,7 +39,7 @@ func main() {
 		s.AddElement(comp)
 	}
 
-	s.End(outputFile)
+	s.End(*outputFilePath)
 
 	fmt.Printf("Parsed `%s` in %s\n", *schematicFilePath, time.Since(start))
 }

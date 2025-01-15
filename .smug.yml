@@ -5,9 +5,9 @@ root: .
 windows:
   - name: vim
 
-  - name: penguin
+  - name: example
     commands:
-      - penguin serve -q . --open
+      - vim examples/simple.schemgo
 
   - name: watch
     commands:
