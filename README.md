@@ -11,10 +11,15 @@
 
 ## What is this?
 
-This tool generates electrical cirtcuit schematic diagram from a minimal language, heavily inspired by [Schemdraw](https://schemdraw.readthedocs.io/en/stable/).
+This tool generates electrical circuit schematic diagram from code, such as [Schemdraw](https://schemdraw.readthedocs.io/en/stable/) and [circuitikz](https://github.com/circuitikz/circuitikz).
 
-Very similar to [Schemdraw](https://schemdraw.readthedocs.io/en/stable/), but also accomplishes the same thing as [circuitikz](https://github.com/circuitikz/circuitikz).
+The language is very minimal and heavily inspired by Schemdraw's.
 
+## Why choose this over Schemdraw/circuitikz?
+
+This ships as a single binary, and is blazingly fast.
+
+**NOT YET IMPLEMENTED:** Is easily included in mdbook as preprocessor.
 
 ## Quickstart
 
@@ -26,11 +31,11 @@ go install github.com/sermuns/schemgo
 
 ## Example usage
 
-Create file `simple.schemgo` containing:
+Create a file `simple.schemgo` containing:
 ```python
 battery.right
 line.up
-resistor.right
+resistor.left
 line.down
 ```
 
@@ -41,23 +46,27 @@ schemgo -i simple.schemgo -o simple.svg
 
 The circuit diagram is created as `simple.svg`:
 
-<!-- ![simple circuit](docs/simple.webp) -->
 <div align="center">
 <a href="docs/simple.svg"><img src="docs/simple.webp" alt="simple circuit" align="center" /></a>
 </div>
-
 
 > [!NOTE]
 > Only svg output is supported at the moment.
 
 ## To-do
-- [ ] More components
+- [ ] Commenting with `//` and `/* */`
+- [ ] `@set` statement to change global defaults (stroke width, padding, color)
+- [ ] Components
+  - [x] Wire
+  - [x] Resistor
+  - [x] Battery
   - [ ] Capacitor
   - [ ] Inductors
   - [ ] Diodes
-- [ ] Push and pop.
+- [ ] Push and pop
 - [ ] Labels
 - [ ] Element attributes
   - [ ] ID for symbolic reference
 - [ ] Syntax highlighting
 - [ ] Exporting to pdf, png, jpg, webp
+- [ ] mdBook preprocessor
