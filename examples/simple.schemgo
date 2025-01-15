@@ -1,3 +1,13 @@
-resistor.right(2.0)
-resistor.right(2.0)
-resistor.up(2.0)
+line.down
+line.down
+line.right
+line.up
+line.down
+resistor.right
+resistor.right
+battery.right
+battery.down
+battery.left
+battery.left
+battery.up
+

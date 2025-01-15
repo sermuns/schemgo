@@ -3,16 +3,14 @@ package main
 import (
 	"flag"
 	"fmt"
-	"time"
 	"os"
+	"time"
 
 	"github.com/sermuns/schemgo/drawing"
 	"github.com/sermuns/schemgo/parsing"
 )
 
 const (
-	width      = 500
-	height     = 500
 	outputFile = "index.html"
 )
 
@@ -34,7 +32,7 @@ func main() {
 		panic(err)
 	}
 
-	s := drawing.NewSchematic(width, height)
+	s := drawing.NewSchematic()
 
 	for _, comp := range schematic.Elements {
 		// fmt.Printf("Adding %s\n", comp.Type)
