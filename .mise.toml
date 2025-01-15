@@ -4,7 +4,7 @@ mdbook = "latest"
 "ubi:badboy/mdbook-mermaid" = "latest"
 "ubi:tommilligan/mdbook-admonish" = "latest"
 "ubi:jonahgoldwastaken/mdbook-external-links" = "latest"
-"cargo:mdbook-autosummary" = "latest"
+"ubi:hypergonial/mdbook-autosummary" = "latest"
 
 
 [tasks.simple]
