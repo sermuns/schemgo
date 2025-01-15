@@ -4,4 +4,4 @@
 - [x] Create path struct
 - [x] Contain array of commands
 - [x] Create command struct
-- [ ] Actions can be ints, not need decimal place
+- [x] Actions can be ints, not need decimal place

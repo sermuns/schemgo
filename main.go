@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	outputFile = "index.html"
+	outputFile = "out.svg"
 )
 
 func main() {

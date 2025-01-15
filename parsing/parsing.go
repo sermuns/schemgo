@@ -1,67 +1,53 @@
 package parsing
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/alecthomas/participle/v2"
+	"github.com/alecthomas/participle/v2/lexer"
 )
 
 type Schematic struct {
 	Elements []*Element `@@*`
 }
 
-type BoundingBox struct {
-	xmin, xmax int
-	ymin, ymax int
-}
-
 type Element struct {
-	Type        string     `@( "battery" | "line" | "resistor" )`
-	Properties  []Property `('(' (@@ (',' @@)*)? ')')?`
-	Actions     []Action   `( @@+ )?`
-	BoundingBox BoundingBox
+	Type       string     `@Ident`
+	Properties []Property `('(' (@@ (',' @@)*)? ')')?`
+	Actions    []Action   `( @@+ )?`
 }
 
 type Property struct {
 	Key   string `@Ident "="`
-	Value Value  `@@`
+	Value string `@String`
 }
 
 type Action struct {
 	Type  string  `'.' @Ident`
-	Units float64 `('(' @Float? ')')?`
+	Units float64 `('(' @Number? ')')?`
 }
 
-type Value interface{ value() }
-
-type String struct {
-	String string `@String`
-}
-
-func (String) value() {}
-
-type Number struct {
-	Number int `@Int`
-}
-
-func (Number) value() {}
+var (
+	schemGoLexer = lexer.MustSimple([]lexer.SimpleRule{
+		{"Ident", `[a-zA-Z_][a-zA-Z_0-9]*`},
+		{"String", `"[^"]*"`},
+		{"Number", `[-+]?[.0-9]+\b`},
+		{"Punct", `\[|]|[-!()+/*=,]`},
+		{"comment", `#[^\n]+`},
+		{"whitespace", `\s+`},
+	})
+	schemGoParser = participle.MustBuild[Schematic](
+		participle.Lexer(schemGoLexer),
+		participle.Unquote("String"),
+	)
+)
 
 func ReadSchematic(schematicFilePath string) (schematic *Schematic, err error) {
-	parser, err := participle.Build[Schematic](
-		participle.Unquote("String"),
-		participle.Union[Value](String{}, Number{}),
-	)
-
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Failed parsing: %s\n", err)
-		os.Exit(1)
-	}
 
 	schemFile, err := os.Open(schematicFilePath)
 	if err != nil {
 		panic(err)
 	}
 
-	return parser.Parse(schematicFilePath, schemFile)
+	return schemGoParser.Parse(schematicFilePath, schemFile)
 }
