@@ -23,12 +23,16 @@ jobs:
       pages: write # to push to a github pages site
       id-token: write # to update the deployment status
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - uses: jdx/mise-action@v2
+      - name: Install tools
+        uses: jdx/mise-action@v2
 
       - name: Build mdBook
-        run: mdbook build
+        run: |
+          touch src/SUMMARY.md
+          mdbook build
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
@@ -38,6 +42,6 @@ jobs:
         with:
           path: "build"
 
-      - name: Deploy to GitHub Pages
+      - name: Deploy to Pages
         id: deployment
         uses: actions/deploy-pages@v4
