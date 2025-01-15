@@ -1,3 +1,7 @@
+[tools]
+"go" = "latest"
+"go:golang.org/x/tools/cmd/godoc" = "latest"
+
 [vars]
 input = 'examples/simple.schemgo'
 out_dir = 'build/'
@@ -9,8 +13,9 @@ sources = [
 	'**/*.go',
 	'{{ vars.input }}'
 ]
-outputs = 'out.svg'
+outputs = '{{ [ vars.out_dir ] | concat(with=vars.input|basename) | join_path }}'
 
-[tools]
-"go" = "latest"
-"go:golang.org/x/tools/cmd/godoc" = "latest"
+
+[tasks.clean]
+alias = 'c'
+run = 'rm -rf {{ vars.out_dir }}'

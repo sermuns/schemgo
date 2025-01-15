@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math"
 	"os"
+	"path/filepath"
 
 	"github.com/sermuns/schemgo/parsing"
 )
@@ -239,5 +240,6 @@ func (s *Schematic) End(outFilePath string) {
 	}
 	buf.WriteString("</svg>")
 
-	os.WriteFile(outFilePath, buf.Bytes(), 0644)
+	os.MkdirAll(filepath.Dir(outFilePath), os.ModePerm)
+	os.WriteFile(outFilePath, buf.Bytes(), os.ModePerm)
 }
