@@ -96,7 +96,7 @@ func (s *Schematic) resistor(p1, p2 point) {
 	)
 	path.attributes = fmt.Sprintf(
 		` transform="rotate(%d, %d, %d)"`,
-		angleDeg, int(p1.x), int(p2.x),
+		angleDeg, int(p1.x), int(p1.y),
 	)
 	s.addPath(path)
 }
@@ -195,7 +195,6 @@ func (s *Schematic) Translate(dx, dy float64) *Schematic {
 	return s
 }
 
-// create string svg representation.
 // need to create root <svg> tag
 // and convert all paths to <path d=...> tags
 func (s *Schematic) End(outFilePath string) {
@@ -204,26 +203,22 @@ func (s *Schematic) End(outFilePath string) {
 	buf.WriteString(`<svg width='500' height='500'>`)
 
 	for _, path := range s.paths {
-		buf.WriteString(fmt.Sprintf(`<path `))
-		buf.WriteString(`d="`)
+		buf.WriteString(`<path `)
+		buf.WriteString(path.attributes)
+		buf.WriteString(` d="`)
 		for _, command := range path.commands {
 			if command.penDown {
 				buf.WriteString("L ")
 			} else {
 				buf.WriteString("M ")
 			}
-			buf.WriteString(
-				fmt.Sprintf("%d %d ",
-					int(command.pos.x),
-					int(command.pos.y),
-				),
-			)
+			buf.WriteString(fmt.Sprintf("%d %d ",
+				int(command.pos.x),
+				int(command.pos.y),
+			))
 		}
-		buf.WriteString(`"`)
-		buf.WriteString(path.attributes)
-		buf.WriteString(` style="stroke:black; stroke-width:5; fill:none;"></path>`)
+		buf.WriteString(`" style="stroke:black; stroke-width:5; stroke-linecap: square; fill:none;"></path>`)
 	}
-
 	buf.WriteString("</svg>")
 
 	os.WriteFile(outFilePath, buf.Bytes(), 0644)
