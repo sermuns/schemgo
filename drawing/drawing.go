@@ -218,7 +218,7 @@ func (s *Schematic) End(outFilePath string) {
 	width, height := s.Normalise()
 
 	buf.WriteString(fmt.Sprintf(
-		`<svg width='%d' height='%d'>`,
+		`<svg width='%d' height='%d' xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1">`,
 		int(width), int(height),
 	))
 
