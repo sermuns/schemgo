@@ -42,16 +42,10 @@ var (
 	)
 )
 
-func MustReadSchematic(schematicFilePath string) (schematic *Schematic) {
-	schemFile, err := os.Open(schematicFilePath)
+func MustReadSchematic(schemFileContents []byte, schemFilePath string) (schematic *Schematic) {
+	schematic, err := schemGoParser.ParseBytes(schemFilePath, schemFileContents)
 	if err != nil {
 		panic(err)
 	}
-
-	schematic, err = schemGoParser.Parse(schematicFilePath, schemFile)
-	if err != nil {
-		panic(err)
-	}
-
 	return schematic
 }
