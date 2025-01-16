@@ -13,6 +13,10 @@ import (
 func writeSchematic(inputFileContents []byte, inputFilePath, outputFilePath string) {
 	parsedSchematic := parsing.MustReadSchematic(inputFileContents, inputFilePath)
 	svgSchematic := drawing.NewSchematic()
+	if(len(parsedSchematic.Elements) == 0) {
+		fmt.Printf("No elements found in `%s`\n", inputFilePath)
+		os.Exit(1)
+	}
 	for _, comp := range parsedSchematic.Elements {
 		svgSchematic.AddElement(comp)
 	}
