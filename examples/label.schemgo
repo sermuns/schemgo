@@ -1,7 +1,0 @@
-battery().right(200).label("200 V", loc=B, color:red)
-line.up
-resistor.left(200).voltage("20 V")
-line.down
-
-# Todo:
-- spänning över

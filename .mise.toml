@@ -9,3 +9,12 @@ sources = [
 	'examples/simple.schemgo'
 ]
 outputs = 'simple.svg'
+
+[tasks.comments]
+alias = 'c'
+run = "go run . build examples/comments.schemgo -o comments.svg"
+sources = [
+	'**/*.go',
+	'examples/comments.schemgo'
+]
+outputs = 'comments.svg'
