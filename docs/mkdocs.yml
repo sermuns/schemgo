@@ -1,0 +1,6 @@
+site_name: schemgo docs
+site_dir: public
+docs_dir: src
+theme:
+  name: material
+  custom_dir: overrides

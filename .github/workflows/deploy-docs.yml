@@ -30,10 +30,9 @@ jobs:
       - name: Install tools
         uses: jdx/mise-action@v2
 
-      - name: Build mdBook
+      - name: Build documentation
         run: |
-          touch src/SUMMARY.md
-          mdbook build
+          mkdocs build
 
       - name: Setup Pages
         uses: actions/configure-pages@v4

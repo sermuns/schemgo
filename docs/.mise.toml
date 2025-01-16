@@ -1,0 +1,2 @@
+[tools]
+"pipx:mkdocs-material" = { version = "latest", pipx_args = "--include-deps"}
