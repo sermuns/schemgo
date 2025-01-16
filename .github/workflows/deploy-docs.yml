@@ -12,10 +12,6 @@ concurrency:
   group: deploy
   cancel-in-progress: true
 
-defaults:
-  run:
-    working-directory: docs
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -29,9 +25,12 @@ jobs:
 
       - name: Install tools
         uses: jdx/mise-action@v2
+        with:
+          working_directory: docs
 
       - name: Build documentation
         run: |
+          cd docs
           mkdocs build
 
       - name: Setup Pages
