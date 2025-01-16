@@ -1,6 +1,8 @@
 package parsing
 
 import (
+	"strings"
+
 	"github.com/alecthomas/participle/v2"
 	"github.com/alecthomas/participle/v2/lexer"
 )
@@ -10,7 +12,7 @@ type Schematic struct {
 }
 
 type Element struct {
-	Type       string     `@Ident`
+	Type       string     `@Element`
 	Properties []Property `('(' (@@ (',' @@)*)? ')')?`
 	Actions    []Action   `( @@+ )?`
 }
@@ -21,12 +23,22 @@ type Property struct {
 }
 
 type Action struct {
-	Type  string  `'.' @Ident`
+	Type  string  `'.' @Action`
 	Units float64 `('(' @Number? ')')?`
+}
+
+var SupportedElements = []string{
+	"resistor", "battery", "line",
+}
+
+var SupportedActions = []string{
+	"right", "up", "left", "down",
 }
 
 var (
 	schemGoLexer = lexer.MustSimple([]lexer.SimpleRule{
+		{"Element", `(` + strings.Join(SupportedElements, "|") + `)`},
+		{"Action", `(` + strings.Join(SupportedActions, "|") + `)`},
 		{"Ident", `[a-zA-Z_][a-zA-Z_0-9]*`},
 		{"String", `"[^"]*"`},
 		{"Number", `[-+]?[.0-9]+\b`},
