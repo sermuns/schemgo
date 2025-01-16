@@ -70,4 +70,5 @@ The circuit diagram is created as `simple.svg`:
   - [ ] ID for symbolic reference
 - [ ] Syntax highlighting
 - [ ] Exporting to pdf, png, jpg, webp
-- [ ] mdBook preprocessor
+- [ ] Handle piped content (stdin, stdout)
+  - [ ] mdBook preprocessor
