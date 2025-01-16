@@ -16,10 +16,8 @@ func exitWithFlagError(message string) {
 	os.Exit(1)
 }
 
-func main() {
-	start := time.Now()
-
-	outputFilePath := flag.String("o", "", "path to output file")
+func readInput() (outputFilePath, inputFilePath *string) {
+	outputFilePath = flag.String("o", "", "path to output file")
 	flag.Parse()
 	args := flag.Args()
 
@@ -30,9 +28,16 @@ func main() {
 		exitWithFlagError("too many arguments")
 	}
 
-	inputFilePath := args[0]
+	inputFilePath = &args[0]
+	return outputFilePath, inputFilePath
+}
 
-	parsedSchematic := parsing.MustReadSchematic(inputFilePath)
+func main() {
+	start := time.Now()
+
+	outputFilePath, inputFilePath := readInput()
+
+	parsedSchematic := parsing.MustReadSchematic(*inputFilePath)
 	svgSchematic := drawing.NewSchematic()
 	for _, comp := range parsedSchematic.Elements {
 		svgSchematic.AddElement(comp)
@@ -41,7 +46,7 @@ func main() {
 
 	fmt.Printf(
 		"Parsed `%s` in %s\n",
-		inputFilePath,
+		*inputFilePath,
 		time.Since(start),
 	)
 }
