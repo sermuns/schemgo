@@ -56,8 +56,8 @@ The circuit diagram is created as `simple.svg`:
 > Only svg output is supported at the moment.
 
 ## To-do
-- [ ] Commenting with `//` and `/* */`
-- [ ] `@set` statement to change global defaults (stroke width, padding, color)
+- [ ] Push and pop
+- [x] Comments with `#`
 - [ ] Components
   - [x] Wire
   - [x] Resistor
@@ -65,7 +65,7 @@ The circuit diagram is created as `simple.svg`:
   - [ ] Capacitor
   - [ ] Inductors
   - [ ] Diodes
-- [ ] Push and pop
+- [ ] `@set` statement to change global defaults (stroke width, padding, color)
 - [ ] Labels
   - [ ] `typst` math
 - [ ] Element attributes
