@@ -21,18 +21,13 @@ func writeSchematic(inputFileContents []byte, inputFilePath, outputFilePath stri
 
 // buildCmd represents the build command
 var buildCmd = &cobra.Command{
-	Use:   "build",
-	Short: "Build svg output from .schemgo file",
+	Use:   "build [input file]",
+	Short: "Build circuit diagram from .schemgo file",
+	Args:  cobra.ExactArgs(1),
 	Long: `Example:
 $ schemgo build examples/simple.schemgo -o simple.svg`,
 	Run: func(cmd *cobra.Command, args []string) {
 		start := time.Now()
-
-		// check if content being piped
-		fi, _ := os.Stdin.Stat()
-		if (fi.Mode() & os.ModeCharDevice) == 0 {
-
-		}
 
 		inputFilePath := args[0]
 
@@ -58,11 +53,7 @@ $ schemgo build examples/simple.schemgo -o simple.svg`,
 func init() {
 	rootCmd.AddCommand(buildCmd)
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// buildCmd.PersistentFlags().String("foo", "", "A help for foo")
+	buildCmd.ValidArgs = []string{"input"}
 
 	buildCmd.Flags().StringP("output", "o", "", "Output file path")
 	buildCmd.MarkFlagRequired("output")
