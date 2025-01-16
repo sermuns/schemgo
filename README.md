@@ -65,6 +65,7 @@ The circuit diagram is created as `simple.svg`:
   - [ ] Diodes
 - [ ] Push and pop
 - [ ] Labels
+  - [ ] `typst` math
 - [ ] Element attributes
   - [ ] ID for symbolic reference
 - [ ] Syntax highlighting
