@@ -27,6 +27,8 @@ This ships as a single binary, and is blazingly fast.
 go install github.com/sermuns/schemgo
 ```
 
+[Many other installation methods are supported!](https://schemgo.samake.se/installation)
+
 `schemgo` is now available in the shell, provided you have `$GOPATH/bin` (`$GOBIN`) in your `PATH`.
 
 ## Example usage
