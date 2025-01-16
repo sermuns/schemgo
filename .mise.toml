@@ -9,7 +9,7 @@ mdbook = "latest"
 
 [tasks.simple]
 alias = 's'
-run = "go run . -i examples/simple.schemgo -o simple.svg"
+run = "go run . build examples/simple.schemgo -o simple.svg"
 sources = [
 	'**/*.go',
 	'examples/simple.schemgo'

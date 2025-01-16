@@ -1,8 +1,6 @@
 package parsing
 
 import (
-	"os"
-
 	"github.com/alecthomas/participle/v2"
 	"github.com/alecthomas/participle/v2/lexer"
 )
