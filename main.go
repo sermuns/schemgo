@@ -10,36 +10,38 @@ import (
 	"github.com/sermuns/schemgo/parsing"
 )
 
+func exitWithFlagError(message string) {
+	fmt.Println("Error:", message)
+	flag.Usage()
+	os.Exit(1)
+}
+
 func main() {
 	start := time.Now()
 
-	schematicFilePath := flag.String("input", "", "path to .schemgo")
-	flag.StringVar(schematicFilePath, "i", "", "shorthand for input")
-
-	outputFilePath := flag.String("output", "", "path to output")
-	flag.StringVar(outputFilePath, "o", "", "shorthand for output")
-
+	outputFilePath := flag.String("o", "", "path to output file")
 	flag.Parse()
+	args := flag.Args()
 
-	if *schematicFilePath == "" {
-		fmt.Println("Error: input flag is required")
-		flag.Usage() // Prints the usage information
-		os.Exit(1)   // Exits the program with a non-zero status
+	if len(args) == 0 {
+		exitWithFlagError("no input file")
+	}
+	if len(args)-2 > 1 {
+		exitWithFlagError("too many arguments")
 	}
 
-	schematic, err := parsing.ReadSchematic(*schematicFilePath)
-	if err != nil {
-		panic(err)
+	inputFilePath := args[0]
+
+	parsedSchematic := parsing.MustReadSchematic(inputFilePath)
+	svgSchematic := drawing.NewSchematic()
+	for _, comp := range parsedSchematic.Elements {
+		svgSchematic.AddElement(comp)
 	}
+	svgSchematic.End(*outputFilePath)
 
-	s := drawing.NewSchematic()
-
-	for _, comp := range schematic.Elements {
-		// fmt.Printf("Adding %s\n", comp.Type)
-		s.AddElement(comp)
-	}
-
-	s.End(*outputFilePath)
-
-	fmt.Printf("Parsed `%s` in %s\n", *schematicFilePath, time.Since(start))
+	fmt.Printf(
+		"Parsed `%s` in %s\n",
+		inputFilePath,
+		time.Since(start),
+	)
 }
