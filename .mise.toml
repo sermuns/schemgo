@@ -1,20 +1,11 @@
 [tools]
 go = "latest"
 
-[tasks.simple]
-alias = 's'
-run = "go run . build examples/simple.schemgo -o simple.svg"
+[tasks.build]
+alias = 'b'
+run = 'go run . build {{"examples/"~arg(i=1,name="input_file")}} -o build/out.svg'
 sources = [
 	'**/*.go',
-	'examples/simple.schemgo'
+	'examples/'
 ]
-outputs = 'simple.svg'
-
-[tasks.comments]
-alias = 'c'
-run = "go run . build examples/comments.schemgo -o comments.svg"
-sources = [
-	'**/*.go',
-	'examples/comments.schemgo'
-]
-outputs = 'comments.svg'
+outputs = { auto = true }
