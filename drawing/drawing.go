@@ -4,8 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"math"
-	"os"
-	"path/filepath"
 
 	"github.com/sermuns/schemgo/parsing"
 )
@@ -210,11 +208,7 @@ func (s *Schematic) Normalise() (width, height float64) {
 	return width, height
 }
 
-// need to create root <svg> tag
-// and convert all paths to <path d=...> tags
-func (s *Schematic) End(outFilePath string) {
-	var buf bytes.Buffer
-
+func (s *Schematic) End(buf *bytes.Buffer) {
 	width, height := s.Normalise()
 
 	buf.WriteString(fmt.Sprintf(
@@ -239,7 +233,4 @@ func (s *Schematic) End(outFilePath string) {
 		buf.WriteString(`" style="stroke:black; stroke-width:5; stroke-linecap: square; fill:none;"></path>`)
 	}
 	buf.WriteString("</svg>")
-
-	os.MkdirAll(filepath.Dir(outFilePath), os.ModePerm)
-	os.WriteFile(outFilePath, buf.Bytes(), os.ModePerm)
 }
