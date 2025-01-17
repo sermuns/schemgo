@@ -56,11 +56,10 @@ The circuit diagram is created as `simple.svg`:
 > Only svg output is supported at the moment.
 
 ## To-do
-- [ ] Subcommands
-  - [ ] `build` exports svg file
-  - [ ] `serve` serves a development website for live-preview
-    - [ ] build svg, put inside html, add websocket live reload
 - [ ] Push and pop
+- [x] Subcommands
+  - [x] `build` exports svg file
+  - [x] `serve` serves a development website for live-preview
 - [x] Comments with `#`
 - [ ] Components
   - [x] Wire
