@@ -17,9 +17,20 @@ const (
 	defaultAdress = "localhost:3000"
 )
 
-type Connections struct {
-	clients map[chan []byte]struct{}
-	mutex   sync.Mutex
+var serveCmd = &cobra.Command{
+	Use:   "serve",
+	Short: "Serve circuit diagram as html on local network, rebuild and live-reload on change. Default: http://" + defaultAdress,
+	Args:  cobra.ExactArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		inFilePath = args[0]
+
+		go watchInput(inFilePath)
+
+		http.HandleFunc("/", serveSchematic)
+		http.HandleFunc("/events", reloadHandler)
+		fmt.Println("Serving on", defaultAdress)
+		log.Fatal(http.ListenAndServe(defaultAdress, nil))
+	},
 }
 
 var (
@@ -64,6 +75,11 @@ eventSource.onmessage = (event) => {
 </script>
 `))
 	w.Write(latestSchematic)
+}
+
+type Connections struct {
+	clients map[chan []byte]struct{}
+	mutex   sync.Mutex
 }
 
 func (c *Connections) add(client chan []byte) {
@@ -136,24 +152,6 @@ func watchInput(inFilePath string) {
 			log.Println("error:", err)
 		}
 	}
-}
-
-var serveCmd = &cobra.Command{
-	Use:   "serve",
-	Short: "Serve circuit diagram as html on local network, rebuild and live-reload on change. Default: http://" + defaultAdress,
-	Args:  cobra.ExactArgs(1),
-	Run: func(cmd *cobra.Command, args []string) {
-		inFilePath = args[0]
-
-		go watchInput(inFilePath)
-
-		http.HandleFunc("/", serveSchematic)
-		http.HandleFunc("/events", reloadHandler)
-		fmt.Println("Serving on", defaultAdress)
-		log.Fatal(http.ListenAndServe(
-			defaultAdress, nil,
-		))
-	},
 }
 
 func init() {
