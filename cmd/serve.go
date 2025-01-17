@@ -66,12 +66,23 @@ func updateSchematic() {
 
 func serveSchematic(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
+	w.Header().Set("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0")
+	w.Header().Set("Pragma", "no-cache")
+	w.Header().Set("Expires", "0")
 	w.Write([]byte(`
+<!DOCTYPE html>
 <script>
-const eventSource = new EventSource('http://` + defaultAdress + `/events')	
-eventSource.onmessage = (event) => {
-	document.querySelector('svg').outerHTML = event.data
+function connect(){
+	const eventSource = new EventSource('http://` + defaultAdress + `/events')	
+	eventSource.onmessage = (event) => {
+		document.querySelector('svg').outerHTML = event.data
+	}
+	eventSource.onerror = () => {
+		setInterval(connect, 1000)
+	}
 }
+
+connect()
 </script>
 `))
 	w.Write(latestSchematic)
@@ -99,7 +110,15 @@ func (c *Connections) broadcast(data []byte) {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 	for client := range c.clients {
-		client <- data
+		select {
+		case client <- data:
+			// sending worked!
+		default:
+			// blocked or closed
+			log.Println("deleting client")
+			delete(c.clients, client)
+			close(client)
+		}
 	}
 }
 
