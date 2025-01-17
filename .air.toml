@@ -1,5 +1,5 @@
 [build]
-  args_bin = ["serve", "examples/simple.schemgo"]
+  args_bin = ["serve", "examples/capacitor.schemgo"]
   exclude_dir = ["docs", "examples", "build"]
 
 [log]

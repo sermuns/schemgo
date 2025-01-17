@@ -84,51 +84,6 @@ func (p *Point) pivotAround(pivot Point, sin, cos float64) {
 	p.y = pivot.y + dx*sin + dy*cos
 }
 
-func (s *Schematic) resistor(p1, p2 Point) {
-	const (
-		height = defaultLength / 4
-		width  = defaultLength / 2
-	)
-
-	distance := p1.distanceTo(p2)
-
-	s.addAndPivotPath(p1, p2, createPath(
-		false, p1.x, p1.y,
-		true, p1.x+distance/2-width/2, p1.y,
-		true, p1.x+distance/2-width/2, p1.y+height/2,
-		true, p1.x+distance/2+width/2, p1.y+height/2,
-		true, p1.x+distance/2+width/2, p1.y-height/2,
-		true, p1.x+distance/2-width/2, p1.y-height/2,
-		true, p1.x+distance/2-width/2, p1.y,
-		false, p1.x+distance/2+width/2, p1.y,
-		true, p1.x+distance, p1.y,
-	))
-}
-
-func (s *Schematic) battery(p1, p2 Point) {
-	const (
-		termGap       = defaultLength / 6
-		negTermHeight = defaultLength / 4
-		posTermHeight = defaultLength / 2
-	)
-
-	distance := p1.distanceTo(p2)
-	negTermX := p1.x + distance/2 - termGap/2
-	posTermX := negTermX + termGap
-
-	s.addAndPivotPath(p1, p2, createPath(
-		false, p1.x, p1.y,
-		true, negTermX, p1.y,
-		false, negTermX, p1.y-negTermHeight/2,
-		true, negTermX, p1.y+negTermHeight/2,
-		false, posTermX, p1.y-posTermHeight/2,
-		true, posTermX, p1.y+posTermHeight/2,
-		false, posTermX, p1.y,
-		true, p1.x+distance, p1.y,
-	))
-
-}
-
 func (s *Schematic) HandleEntry(entry *parsing.Entry) {
 	p1 := Point{s.pos.x, s.pos.y}
 
@@ -171,18 +126,15 @@ func (s *Schematic) HandleEntry(entry *parsing.Entry) {
 		s.battery(p1, p2)
 	case "line":
 		s.line(p1, p2)
+	case "capacitor":
+		s.capacitor(p1, p2)
+	default:
+		panic(fmt.Errorf("unimplemented element type: %s", elem.Type))
 	}
 }
 
 func NewSchematic() *Schematic {
 	return &Schematic{}
-}
-
-func (s *Schematic) line(p1, p2 Point) {
-	s.addPath(createPath(
-		false, p1.x, p1.y,
-		true, p2.x, p2.y,
-	))
 }
 
 func (s *Schematic) Translate(dx, dy float64) *Schematic {

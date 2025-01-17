@@ -39,7 +39,7 @@ type Action struct {
 
 var (
 	SupportedElements = []string{
-		"resistor", "battery", "line",
+		"resistor", "battery", "line", "capacitor",
 	}
 	SupportedActions = []string{
 		"right", "up", "left", "down",

@@ -62,10 +62,11 @@ The circuit diagram is created as `simple.svg`:
   - [x] `serve` serves a development website for live-preview
 - [x] Comments with `#`
 - [ ] Components
+  - [ ] (Better way of defining appearances... maybe external files?)
   - [x] Wire
   - [x] Resistor
   - [x] Battery
-  - [ ] Capacitor
+  - [x] Capacitor
   - [ ] Inductors
   - [ ] Diodes
 - [ ] `@set` statement to change global defaults (stroke width, padding, color)
