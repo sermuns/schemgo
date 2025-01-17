@@ -1,0 +1,13 @@
+[build]
+  args_bin = ["serve", "examples/simple.schemgo"]
+  exclude_dir = ["docs", "examples", "build"]
+
+[log]
+  time = true
+
+[misc]
+  clean_on_exit = true
+
+[screen]
+  clear_on_rebuild = false
+  keep_scroll = true
