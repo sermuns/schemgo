@@ -8,7 +8,12 @@ import (
 )
 
 type Schematic struct {
-	Elements []*Element `@@*`
+	Entries  []*Entry `@@*`
+}
+
+type Entry struct {
+	Element Element `@@`
+	Command Command `| @@`
 }
 
 type Element struct {
@@ -17,8 +22,13 @@ type Element struct {
 	Actions    []Action   `( @@+ )?`
 }
 
+type Command struct {
+	Type       string     `@Command`
+	Properties []Property `('(' (@@ (',' @@)*)? ')')?`
+}
+
 type Property struct {
-	Key   string `@Ident "="`
+	Key   string `@Ident '='`
 	Value string `@String`
 }
 
@@ -27,18 +37,23 @@ type Action struct {
 	Units float64 `('(' @Number? ')')?`
 }
 
-var SupportedElements = []string{
-	"resistor", "battery", "line",
-}
-
-var SupportedActions = []string{
-	"right", "up", "left", "down",
-}
+var (
+	SupportedElements = []string{
+		"resistor", "battery", "line",
+	}
+	SupportedActions = []string{
+		"right", "up", "left", "down",
+	}
+	SupportedCommands = []string{
+		"push", "pop",
+	}
+)
 
 var (
 	schemGoLexer = lexer.MustSimple([]lexer.SimpleRule{
 		{"Element", `(` + strings.Join(SupportedElements, "|") + `)`},
 		{"Action", `(` + strings.Join(SupportedActions, "|") + `)`},
+		{"Command", `(` + strings.Join(SupportedCommands, "|") + `)`},
 		{"Ident", `[a-zA-Z_][a-zA-Z_0-9]*`},
 		{"String", `"[^"]*"`},
 		{"Number", `[-+]?[.0-9]+\b`},

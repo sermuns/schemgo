@@ -12,12 +12,12 @@ import (
 func writeSchematic(inContents []byte) (outContent []byte) {
 	parsedSchematic := parsing.MustReadSchematic(inContents, "")
 	svgSchematic := drawing.NewSchematic()
-	if len(parsedSchematic.Elements) == 0 {
-		fmt.Printf("No elements found in schematic\n")
+	if len(parsedSchematic.Entries) == 0 {
+		fmt.Printf("No entries in schematic, can't build\n")
 		os.Exit(1)
 	}
-	for _, comp := range parsedSchematic.Elements {
-		svgSchematic.AddElement(comp)
+	for _, entry := range parsedSchematic.Entries{
+		svgSchematic.HandleEntry(entry)
 	}
 	var buf bytes.Buffer
 	svgSchematic.End(&buf)

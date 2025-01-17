@@ -56,7 +56,7 @@ The circuit diagram is created as `simple.svg`:
 > Only svg output is supported at the moment.
 
 ## To-do
-- [ ] Push and pop
+- [x] Push and pop
 - [x] Subcommands
   - [x] `build` exports svg file
   - [x] `serve` serves a development website for live-preview

@@ -14,30 +14,33 @@ const (
 	defaultStrokeWidth = 5
 )
 
-type point struct {
+var stack Stack
+
+type Point struct {
 	x, y float64
 }
 
 type command struct {
 	penDown bool
-	pos     point
+	pos     Point
 }
 
 type Path []command
 
 type Schematic struct {
-	X, Y  float64
+	pos   Point
 	paths []*Path
 }
 
-// `input` is grouped into 3 and parsed as pathCommand
+// `input`:s elements are grouped into triplets and parsed as a path
+// i'm sorry this is so fucked up
 func createPath(input ...any) Path {
 	if len(input)%3 != 0 {
 		panic("createPath: input must be a multiple of 3")
 	}
 
 	newPath := Path{}
-	newCommand := command{pos: point{0, 0}, penDown: true}
+	newCommand := command{pos: Point{0, 0}, penDown: true}
 	for i, part := range input {
 		partType := i % 3
 		switch partType {
@@ -57,31 +60,31 @@ func (s *Schematic) addPath(path Path) {
 	s.paths = append(s.paths, &path)
 }
 
-func (s *Schematic) addAndPivotPath(start, end point, path Path) {
+func (s *Schematic) addAndPivotPath(start, end Point, path Path) {
 	angle := math.Atan2(end.y-start.y, end.x-start.x)
 	path.pivotAround(start, angle)
 	s.addPath(path)
 }
 
-func (this *point) distanceTo(other point) float64 {
+func (this *Point) distanceTo(other Point) float64 {
 	return math.Hypot(other.x-this.x, other.y-this.y)
 }
 
-func (path *Path) pivotAround(pivot point, angle float64) {
+func (path *Path) pivotAround(pivot Point, angle float64) {
 	sin, cos := math.Sincos(angle)
 	for i := range *path {
 		(*path)[i].pos.pivotAround(pivot, sin, cos)
 	}
 }
 
-func (p *point) pivotAround(pivot point, sin, cos float64) {
+func (p *Point) pivotAround(pivot Point, sin, cos float64) {
 	dx := p.x - pivot.x
 	dy := p.y - pivot.y
 	p.x = pivot.x + dx*cos - dy*sin
 	p.y = pivot.y + dx*sin + dy*cos
 }
 
-func (s *Schematic) resistor(p1, p2 point) {
+func (s *Schematic) resistor(p1, p2 Point) {
 	const (
 		height = defaultLength / 4
 		width  = defaultLength / 2
@@ -102,7 +105,7 @@ func (s *Schematic) resistor(p1, p2 point) {
 	))
 }
 
-func (s *Schematic) battery(p1, p2 point) {
+func (s *Schematic) battery(p1, p2 Point) {
 	const (
 		termGap       = defaultLength / 6
 		negTermHeight = defaultLength / 4
@@ -126,10 +129,21 @@ func (s *Schematic) battery(p1, p2 point) {
 
 }
 
-func (s *Schematic) AddElement(e *parsing.Element) {
-	p1 := point{s.X, s.Y}
+func (s *Schematic) HandleEntry(entry *parsing.Entry) {
+	p1 := Point{s.pos.x, s.pos.y}
 
-	for _, action := range e.Actions {
+	switch entry.Command.Type {
+	case "push":
+		stack.Push(p1)
+		return
+	case "pop":
+		s.pos = stack.Pop()
+		return
+	}
+
+	elem := entry.Element
+
+	for _, action := range elem.Actions {
 
 		value := action.Units * unitLength
 		if value == 0 {
@@ -148,9 +162,9 @@ func (s *Schematic) AddElement(e *parsing.Element) {
 		}
 	}
 
-	p2 := point{s.X, s.Y}
+	p2 := Point{s.pos.x, s.pos.y}
 
-	switch e.Type {
+	switch elem.Type {
 	case "resistor":
 		s.resistor(p1, p2)
 	case "battery":
@@ -161,14 +175,10 @@ func (s *Schematic) AddElement(e *parsing.Element) {
 }
 
 func NewSchematic() *Schematic {
-	return &Schematic{
-		X:     0,
-		Y:     0,
-		paths: []*Path{},
-	}
+	return &Schematic{}
 }
 
-func (s *Schematic) line(p1, p2 point) {
+func (s *Schematic) line(p1, p2 Point) {
 	s.addPath(createPath(
 		false, p1.x, p1.y,
 		true, p2.x, p2.y,
@@ -176,8 +186,8 @@ func (s *Schematic) line(p1, p2 point) {
 }
 
 func (s *Schematic) Translate(dx, dy float64) *Schematic {
-	s.X += dx
-	s.Y += dy
+	s.pos.x += dx
+	s.pos.y += dy
 	return s
 }
 
