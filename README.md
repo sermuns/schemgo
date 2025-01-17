@@ -43,7 +43,7 @@ line.down
 
 Run:
 ```sh
-schemgo -i simple.schemgo -o simple.svg
+schemgo build simple.schemgo -o simple.svg
 ```
 
 The circuit diagram is created as `simple.svg`:
@@ -56,6 +56,10 @@ The circuit diagram is created as `simple.svg`:
 > Only svg output is supported at the moment.
 
 ## To-do
+- [ ] Subcommands
+  - [ ] `build` exports svg file
+  - [ ] `serve` serves a development website for live-preview
+    - [ ] build svg, put inside html, add websocket live reload
 - [ ] Push and pop
 - [x] Comments with `#`
 - [ ] Components
