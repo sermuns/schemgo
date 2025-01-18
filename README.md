@@ -49,7 +49,7 @@ schemgo build simple.schemgo -o simple.svg
 The circuit diagram is created as `simple.svg`:
 
 <div align="center">
-<a href="docs/simple.svg"><img src="docs/simple.webp" alt="simple circuit" align="center" /></a>
+<a href="media/simple.svg"><img src="media/simple.webp" alt="simple circuit" align="center" /></a>
 </div>
 
 > [!NOTE]
