@@ -59,12 +59,12 @@ The circuit diagram is created as `simple.svg`:
 > Only svg output is supported at the moment.
 
 ## To-do
-
+- [x] Handle piped content (stdin, stdout)
+  - [ ] mdBook preprocessor
 - [x] Push and pop
 - [x] Subcommands
   - [x] `build` exports svg file
   - [x] `serve` serves a development website for live-preview
-- [x] Comments with `#`
 - [ ] Components
   - [ ] (Better way of defining appearances... maybe external files?)
   - [ ] Separate 'line' and 'point' components.
@@ -74,12 +74,11 @@ The circuit diagram is created as `simple.svg`:
   - [x] Capacitor
   - [ ] Inductors
   - [ ] Diodes
+- [x] Comments with `#`
 - [ ] `@set` statement to change global defaults (stroke width, padding, color)
 - [ ] Labels
   - [ ] `typst` math
 - [ ] Element attributes
   - [ ] ID for symbolic reference
-- [ ] Syntax highlighting
 - [ ] Exporting to pdf, png, jpg, webp
-- [ ] Handle piped content (stdin, stdout)
-  - [ ] mdBook preprocessor
+- [ ] Syntax highlighting, LSP
