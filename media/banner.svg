@@ -6,16 +6,16 @@
    id="レイヤー_1"
    x="0px"
    y="0px"
-   width="474.85455"
-   height="474.85455"
-   viewBox="0 0 474.85457 474.85455"
+   width="1427.2955"
+   height="837.52515"
+   viewBox="0 0 1427.2956 837.52514"
    enable-background="new 0 0 458.712 604.994"
    xml:space="preserve"
-   sodipodi:docname="logo.svg"
+   sodipodi:docname="banner.svg"
    inkscape:version="1.4 (unknown)"
-   inkscape:export-filename="logo.jpg"
-   inkscape:export-xdpi="300"
-   inkscape:export-ydpi="300"
+   inkscape:export-filename="banner.jpg"
+   inkscape:export-xdpi="150"
+   inkscape:export-ydpi="150"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -66,15 +66,7 @@
        operator="over"
        in="SourceGraphic"
        in2="comp1"
-       id="feComposite89" /></filter><clipPath
-     clipPathUnits="userSpaceOnUse"
-     id="clipPath116"><rect
-       style="fill:#ffc05c;fill-opacity:0.572523;fill-rule:nonzero;stroke:#000000;stroke-width:6;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
-       id="rect117"
-       width="474.85455"
-       height="474.85455"
-       x="827.37091"
-       y="200.05139" /></clipPath></defs><sodipodi:namedview
+       id="feComposite89" /></filter></defs><sodipodi:namedview
    id="namedview22"
    pagecolor="#d1d1d1"
    bordercolor="#000000"
@@ -83,9 +75,9 @@
    inkscape:pageopacity="0.0"
    inkscape:pagecheckerboard="0"
    inkscape:deskcolor="#d1d1d1"
-   inkscape:zoom="0.86473316"
-   inkscape:cx="112.75155"
-   inkscape:cy="319.17361"
+   inkscape:zoom="0.30572934"
+   inkscape:cx="812.81044"
+   inkscape:cy="935.46795"
    inkscape:window-width="1280"
    inkscape:window-height="1403"
    inkscape:window-x="1280"
@@ -94,9 +86,7 @@
    inkscape:current-layer="レイヤー_1" />
 
 <g
-   id="g114"
-   clip-path="url(#clipPath116)"
-   transform="translate(-827.37091,-200.05139)"><rect
+   id="g1"><rect
      style="fill:#ffc05c;fill-opacity:1;stroke:#000000;stroke-width:7.55758;stroke-dasharray:none;stroke-opacity:1"
      id="rect70"
      width="1133.8031"

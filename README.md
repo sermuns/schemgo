@@ -1,7 +1,7 @@
 <div align="center">
-<img src="media/logo.svg" />
+<img src="media/banner.svg" />
 <h1><code>schemgo</code></h1>
-<p><em>Dead simple circuit schematic generator</em></p>
+<p><em>Let the gophers put your schematic to paper!</em></p>
 <a href="https://goreportcard.com/report/github.com/sermuns/schemgo"><img alt="goreportcard-badge" src="https://goreportcard.com/badge/github.com/sermuns/schemgo"></a>
 <a href="https://www.gnu.org/licenses/gpl-3.0">
 <img alt="license-badge" src="https://img.shields.io/badge/License-GPLv3-blue.svg"></a>
