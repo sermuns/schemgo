@@ -96,8 +96,8 @@ function connect(){
 	eventSource.onmessage = (event) => {
 		document.querySelector('svg').outerHTML = event.data
 	}
-	eventSource.onerror = () => {
-		setTimeout(connect, 1000)
+	eventSource.onerror = (err) => {
+		console.error(err)
 	}
 }
 
@@ -145,6 +145,10 @@ func reloadHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/event-stream")
 	w.Header().Set("Cache-Control", "no-cache")
 	w.Header().Set("Connection", "keep-alive")
+
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 
 	clientChan := make(chan []byte)
 	connections.add(clientChan)
