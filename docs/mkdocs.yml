@@ -1,6 +1,47 @@
-site_name: schemgo docs
-site_dir: public
+site_name: schemgo
+
 docs_dir: src
+site_dir: public
+
+repo_url: https://github.com/sermuns/schemgo
+
 theme:
   name: material
-  custom_dir: overrides
+  favicon: media/logo.svg
+  logo: media/logo.svg
+  # features: 
+  #   - header.autohide
+  #   - navigation.tabs
+  #   - navigation.footer
+  #   - content.action.edit
+  #   - navigation.sections
+  # palette:
+  #   # Palette toggle for light mode
+  #   - media: "(prefers-color-scheme: light)"
+  #     scheme: default 
+  #     primary: yellow
+  #     accent: yellow
+  #     toggle:
+  #       icon: material/brightness-7
+  #       name: Switch to dark mode
+  #   # Palette toggle for dark mode
+  #   - media: "(prefers-color-scheme: dark)"
+  #     scheme: slate
+  #     primary: yellow
+  #     accent: yellow
+  #     toggle:
+  #       icon: material/brightness-4
+  #       name: Switch to system preference
+  # icon: 
+  #   edit: material/pencil
+  #   view: material/eye
+
+
+plugins:
+  - search
+
+markdown_extensions:
+  - footnotes
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
