@@ -14,7 +14,9 @@ const (
 	defaultStrokeWidth = 5
 )
 
-var stack Stack
+var (
+	stack Stack
+)
 
 type Point struct {
 	x, y float64
@@ -27,9 +29,15 @@ type command struct {
 
 type Path []command
 
+type Circle struct {
+	centerPos Point
+	radius    float64
+}
+
 type Schematic struct {
-	pos   Point
-	paths []*Path
+	pos     Point
+	paths   []*Path
+	circles []*Circle
 }
 
 // `input`:s elements are grouped into triplets and parsed as a path
@@ -58,6 +66,13 @@ func createPath(input ...any) Path {
 
 func (s *Schematic) addPath(path Path) {
 	s.paths = append(s.paths, &path)
+}
+
+func (s *Schematic) addCircle(x, y, radius float64) {
+	s.circles = append(s.circles, &Circle{
+		centerPos: Point{x, y},
+		radius:    radius,
+	})
 }
 
 func (s *Schematic) addAndPivotPath(start, end Point, path Path) {
@@ -128,8 +143,10 @@ func (s *Schematic) HandleEntry(entry *parsing.Entry) {
 		s.line(p1, p2)
 	case "capacitor":
 		s.capacitor(p1, p2)
+	case "dot":
+		s.dot(p1)
 	default:
-		fmt.Println("unimplemented element type: %s", elem.Type)
+		fmt.Printf("unimplemented element type: %s\n", elem.Type)
 	}
 }
 
@@ -143,11 +160,15 @@ func (s *Schematic) Translate(dx, dy float64) *Schematic {
 	return s
 }
 
+// FIXME: this is one ugly function.. 
+// we probably need to change the way we're handling svg 
+// elements. Can't have duplicated logic for path and circle and god
+// knows what more elements...
 func (s *Schematic) Normalise() (width, height float64) {
 	minX, minY := math.MaxFloat64, math.MaxFloat64
 	maxX, maxY := -math.MaxFloat64, -math.MaxFloat64
 
-	// find bounds
+	// find bounds of paths
 	for _, path := range s.paths {
 		for _, command := range *path {
 			minX = min(minX, command.pos.x)
@@ -156,6 +177,14 @@ func (s *Schematic) Normalise() (width, height float64) {
 			maxY = max(maxY, command.pos.y)
 		}
 	}
+	
+	// find bounds for circles
+	for _, circle := range s.circles {
+		minX = min(minX, circle.centerPos.x-circle.radius)
+		minY = min(minY, circle.centerPos.y-circle.radius)
+		maxX = max(maxX, circle.centerPos.x+circle.radius)
+		maxY = max(maxY, circle.centerPos.y+circle.radius)
+	}
 
 	// apply translation to all paths
 	for _, path := range s.paths {
@@ -163,6 +192,12 @@ func (s *Schematic) Normalise() (width, height float64) {
 			(*path)[i].pos.x -= minX - defaultStrokeWidth
 			(*path)[i].pos.y -= minY - defaultStrokeWidth
 		}
+	}
+
+	// apply translation to all circles
+	for _, circle := range s.circles {
+		circle.centerPos.x -= minX - defaultStrokeWidth
+		circle.centerPos.y -= minY - defaultStrokeWidth
 	}
 
 	width = maxX - minX + defaultStrokeWidth*2
@@ -187,7 +222,18 @@ func (s *Schematic) End(buf *bytes.Buffer) {
 				command.pos.y,
 			))
 		}
-		buf.WriteString(`" style="stroke:black; stroke-width:5; stroke-linecap: square; fill:none;"></path>`)
+		buf.WriteString(fmt.Sprintf(
+			`" style="stroke:black; stroke-width:%d; stroke-linecap: square; fill:none;"></path>`,
+			defaultStrokeWidth,
+		))
 	}
+
+	for _, circle := range s.circles {
+		buf.WriteString(fmt.Sprintf(
+			`<circle cx="%g" cy="%g" r="%g" fill="white" stroke="black" stroke-width="%d"></circle>`,
+			circle.centerPos.x, circle.centerPos.y, circle.radius, defaultStrokeWidth,
+		))
+	}
+
 	buf.WriteString("</svg>")
 }

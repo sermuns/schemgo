@@ -29,7 +29,8 @@ func (s *Schematic) resistor(p1, p2 Point) {
 }
 
 func (s *Schematic) dot(p1 Point) {
-
+	const radius = defaultLength / 25
+	s.addCircle(p1.x, p1.y, radius)
 }
 
 func (s *Schematic) battery(p1, p2 Point) {

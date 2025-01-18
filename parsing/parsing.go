@@ -8,7 +8,7 @@ import (
 )
 
 type Schematic struct {
-	Entries  []*Entry `@@*`
+	Entries []*Entry `@@*`
 }
 
 type Entry struct {
@@ -39,7 +39,7 @@ type Action struct {
 
 var (
 	SupportedElements = []string{
-		"resistor", "battery", "line", "capacitor",
+		"resistor", "battery", "line", "capacitor", "dot",
 	}
 	SupportedActions = []string{
 		"right", "up", "left", "down",
