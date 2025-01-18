@@ -1,23 +1,45 @@
 package cmd
 
 import (
+	"fmt"
+	"io"
 	"os"
 
 	"github.com/spf13/cobra"
 )
 
-// rootCmd represents the base command when called without any subcommands
+func handlePiped() bool {
+	fi, err := os.Stdin.Stat()
+	if err != nil {
+		fmt.Println("Error checking stdin:", err)
+		os.Exit(1)
+	}
+
+	if (fi.Mode() & os.ModeCharDevice) == 0 {
+		content, err := io.ReadAll(os.Stdin)
+		if err != nil {
+			fmt.Println("Error reading from stdin:", err)
+			os.Exit(1)
+		}
+		fmt.Print(string(writeSchematic(content)))
+		return true
+	}
+	return false
+}
+
 var rootCmd = &cobra.Command{
 	Use:   "schemgo",
 	Short: "Dead simple circuit schematic generator",
-	Long: ``,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	// Run: func(cmd *cobra.Command, args []string) { },
+	Long: `Input can also be piped into this root command to get output in stdout.
+	`,
+	Run: func(cmd *cobra.Command, args []string) {
+		if handlePiped() {
+			return
+		}
+		cmd.Help()
+	},
 }
 
-// Execute adds all child commands to the root command and sets flags appropriately.
-// This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
 	err := rootCmd.Execute()
 	if err != nil {
@@ -26,13 +48,4 @@ func Execute() {
 }
 
 func init() {
-	// Here you will define your flags and configuration settings.
-	// Cobra supports persistent flags, which, if defined here,
-	// will be global for your application.
-
-	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.cli.yaml)")
-
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
-	// rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

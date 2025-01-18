@@ -12,4 +12,4 @@ outputs = { auto = true }
 
 [tasks.clean]
 alias = 'c'
-run = 'rm -rf build/ tmp/'
+run = 'rm -rf schemgo tmp/ $GOBIN/schemgo'

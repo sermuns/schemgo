@@ -67,6 +67,7 @@ The circuit diagram is created as `simple.svg`:
 - [x] Comments with `#`
 - [ ] Components
   - [ ] (Better way of defining appearances... maybe external files?)
+  - [ ] Separate 'line' and 'point' components.
   - [x] Wire
   - [x] Resistor
   - [x] Battery
