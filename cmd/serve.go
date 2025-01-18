@@ -6,8 +6,11 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"runtime"
 	"sync"
+	"time"
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/cobra"
@@ -28,9 +31,25 @@ var serveCmd = &cobra.Command{
 
 		http.HandleFunc("/", serveSchematic)
 		http.HandleFunc("/events", reloadHandler)
-		fmt.Println("Serving on", defaultAdress)
-		log.Fatal(http.ListenAndServe(defaultAdress, nil))
+
+		address := cmd.Flag("bind").Value.String()
+
+		go func() {
+			time.Sleep(time.Second)
+			if cmd.Flag("open").Value.String() == "true" {
+				openBrowser("http://" + address)
+			}
+		}()
+
+		log.Fatal(http.ListenAndServe(address, nil))
 	},
+}
+
+func init() {
+	rootCmd.AddCommand(serveCmd)
+
+	serveCmd.Flags().StringP("bind", "b", defaultAdress, "Bind to this address")
+	serveCmd.Flags().BoolP("open", "o", false, "Open browser")
 }
 
 var (
@@ -78,7 +97,7 @@ function connect(){
 		document.querySelector('svg').outerHTML = event.data
 	}
 	eventSource.onerror = () => {
-		setInterval(connect, 1000)
+		setTimeout(connect, 1000)
 	}
 }
 
@@ -173,6 +192,19 @@ func watchInput(inFilePath string) {
 	}
 }
 
-func init() {
-	rootCmd.AddCommand(serveCmd)
+func openBrowser(url string) {
+	var err error
+	switch runtime.GOOS {
+	case "linux":
+		err = exec.Command("xdg-open", url).Start()
+	case "windows":
+		err = exec.Command("rundll32", "url.dll,FileProtocolHandler", url).Start()
+	case "darwin":
+		err = exec.Command("open", url).Start()
+	default:
+		err = fmt.Errorf("unsupported platform")
+	}
+	if err != nil {
+		log.Fatal(err)
+	}
 }
