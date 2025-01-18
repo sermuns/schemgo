@@ -1,4 +1,5 @@
 <div align="center">
+<img src="media/logo.svg" />
 <h1><code>schemgo</code></h1>
 <p><em>Dead simple circuit schematic generator</em></p>
 <a href="https://goreportcard.com/report/github.com/sermuns/schemgo"><img alt="goreportcard-badge" src="https://goreportcard.com/badge/github.com/sermuns/schemgo"></a>
@@ -34,6 +35,7 @@ go install github.com/sermuns/schemgo
 ## Example usage
 
 Create a file `simple.schemgo` containing:
+
 ```python
 battery.right
 line.up
@@ -42,6 +44,7 @@ line.down
 ```
 
 Run:
+
 ```sh
 schemgo build simple.schemgo -o simple.svg
 ```
@@ -56,6 +59,7 @@ The circuit diagram is created as `simple.svg`:
 > Only svg output is supported at the moment.
 
 ## To-do
+
 - [x] Push and pop
 - [x] Subcommands
   - [x] `build` exports svg file
