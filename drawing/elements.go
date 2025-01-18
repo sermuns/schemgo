@@ -2,8 +2,8 @@ package drawing
 
 func (s *Schematic) line(p1, p2 Point) {
 	s.addPath(createPath(
-		false, p1.x, p1.y,
-		true, p2.x, p2.y,
+		'M', p1.x, p1.y,
+		'L', p2.x, p2.y,
 	))
 }
 
@@ -16,16 +16,20 @@ func (s *Schematic) resistor(p1, p2 Point) {
 	distance := p1.distanceTo(p2)
 
 	s.addAndPivotPath(p1, p2, createPath(
-		false, p1.x, p1.y,
-		true, p1.x+distance/2-width/2, p1.y,
-		true, p1.x+distance/2-width/2, p1.y+height/2,
-		true, p1.x+distance/2+width/2, p1.y+height/2,
-		true, p1.x+distance/2+width/2, p1.y-height/2,
-		true, p1.x+distance/2-width/2, p1.y-height/2,
-		true, p1.x+distance/2-width/2, p1.y,
-		false, p1.x+distance/2+width/2, p1.y,
-		true, p1.x+distance, p1.y,
+		'M', p1.x, p1.y,
+		'L', p1.x+distance/2-width/2, p1.y,
+		'L', p1.x+distance/2-width/2, p1.y+height/2,
+		'L', p1.x+distance/2+width/2, p1.y+height/2,
+		'L', p1.x+distance/2+width/2, p1.y-height/2,
+		'L', p1.x+distance/2-width/2, p1.y-height/2,
+		'L', p1.x+distance/2-width/2, p1.y,
+		'M', p1.x+distance/2+width/2, p1.y,
+		'L', p1.x+distance, p1.y,
 	))
+}
+
+func (s *Schematic) dot(p1 Point) {
+
 }
 
 func (s *Schematic) battery(p1, p2 Point) {
@@ -40,14 +44,14 @@ func (s *Schematic) battery(p1, p2 Point) {
 	posTermX := negTermX + termGap
 
 	s.addAndPivotPath(p1, p2, createPath(
-		false, p1.x, p1.y,
-		true, negTermX, p1.y,
-		false, negTermX, p1.y-negTermHeight/2,
-		true, negTermX, p1.y+negTermHeight/2,
-		false, posTermX, p1.y-posTermHeight/2,
-		true, posTermX, p1.y+posTermHeight/2,
-		false, posTermX, p1.y,
-		true, p1.x+distance, p1.y,
+		'M', p1.x, p1.y,
+		'L', negTermX, p1.y,
+		'M', negTermX, p1.y-negTermHeight/2,
+		'L', negTermX, p1.y+negTermHeight/2,
+		'M', posTermX, p1.y-posTermHeight/2,
+		'L', posTermX, p1.y+posTermHeight/2,
+		'M', posTermX, p1.y,
+		'L', p1.x+distance, p1.y,
 	))
 }
 
@@ -62,13 +66,13 @@ func (s *Schematic) capacitor(p1, p2 Point) {
 	posTermX := negTermX + gap
 
 	s.addAndPivotPath(p1, p2, createPath(
-		false, p1.x, p1.y,
-		true, negTermX, p1.y,
-		false, negTermX, p1.y-height/2,
-		true, negTermX, p1.y+height/2,
-		false, posTermX, p1.y-height/2,
-		true, posTermX, p1.y+height/2,
-		false, posTermX, p1.y,
-		true, p1.x+distance, p1.y,
+		'M', p1.x, p1.y,
+		'L', negTermX, p1.y,
+		'M', negTermX, p1.y-height/2,
+		'L', negTermX, p1.y+height/2,
+		'M', posTermX, p1.y-height/2,
+		'L', posTermX, p1.y+height/2,
+		'M', posTermX, p1.y,
+		'L', p1.x+distance, p1.y,
 	))
 }

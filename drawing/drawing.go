@@ -21,8 +21,8 @@ type Point struct {
 }
 
 type command struct {
-	penDown bool
-	pos     Point
+	letter rune
+	pos    Point
 }
 
 type Path []command
@@ -40,12 +40,12 @@ func createPath(input ...any) Path {
 	}
 
 	newPath := Path{}
-	newCommand := command{pos: Point{0, 0}, penDown: true}
+	newCommand := command{}
 	for i, part := range input {
 		partType := i % 3
 		switch partType {
 		case 0:
-			newCommand.penDown = part.(bool)
+			newCommand.letter = part.(rune)
 		case 1:
 			newCommand.pos.x = part.(float64)
 		case 2:
@@ -129,7 +129,7 @@ func (s *Schematic) HandleEntry(entry *parsing.Entry) {
 	case "capacitor":
 		s.capacitor(p1, p2)
 	default:
-		panic(fmt.Errorf("unimplemented element type: %s", elem.Type))
+		fmt.Println("unimplemented element type: %s", elem.Type)
 	}
 }
 
@@ -179,17 +179,12 @@ func (s *Schematic) End(buf *bytes.Buffer) {
 	))
 
 	for _, path := range s.paths {
-		buf.WriteString(`<path `)
-		buf.WriteString(` d="`)
+		buf.WriteString(`<path d="`)
 		for _, command := range *path {
-			if command.penDown {
-				buf.WriteString("L ")
-			} else {
-				buf.WriteString("M ")
-			}
-			buf.WriteString(fmt.Sprintf("%d %d ",
-				int(command.pos.x),
-				int(command.pos.y),
+			buf.WriteString(fmt.Sprintf("%c %g %g ",
+				command.letter,
+				command.pos.x,
+				command.pos.y,
 			))
 		}
 		buf.WriteString(`" style="stroke:black; stroke-width:5; stroke-linecap: square; fill:none;"></path>`)
