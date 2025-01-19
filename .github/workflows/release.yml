@@ -58,11 +58,6 @@ jobs:
       - name: Build
         run: go build -ldflags "-s -w" -o build/${{ env.REPO_NAME }}-${{ matrix.target }}
 
-      - name: Post Setup | Strip binaries (-nix)
-        if: matrix.os != 'windows-latest'
-        run: |
-          strip build/${REPO_NAME}-${{ matrix.target }}${{ matrix.ext }}
-
       - name: Post Setup | Upload artifacts
         uses: actions/upload-artifact@v4
         with:
