@@ -1,6 +1,6 @@
 # Based on https://github.com/badboy/mdbook-toc/blob/main/.github/workflows/deploy.yml
 
-name: Build and release
+name: Release binaries
 
 on:
   push:
@@ -11,7 +11,7 @@ on:
 
 jobs:
   github_build:
-    name: Build release binaries
+    name: Build binaries
     strategy:
       fail-fast: false
       matrix:
@@ -54,11 +54,13 @@ jobs:
           mkdir -p dist
           GOOS=windows GOARCH=amd64 go build -o dist/${REPO_NAME}-${{ matrix.target }}.exe
 
-      - name: Build (Other Targets)
+      - name: Build | Cross-compile (Other Targets)
         if: matrix.target != 'x86_64-pc-windows-msvc'
         run: |
           mkdir -p dist
-          GOOS=${{ matrix.target%/* }} GOARCH=${{ matrix.target#*/ }} go build -o dist/${REPO_NAME}-${{ matrix.target }}
+          OS=$(echo "${{ matrix.target }}" | cut -d'-' -f1)
+          ARCH=$(echo "${{ matrix.target }}" | cut -d'-' -f2)
+          GOOS=$OS GOARCH=$ARCH go build -o dist/${REPO_NAME}-${{ matrix.target }}
 
       - name: Post Setup | Strip binaries (-nix)
         if: matrix.os != 'windows-latest'
@@ -71,7 +73,6 @@ jobs:
           name: ${{ github.repository }}-${{ matrix.target }}
           path: dist/${REPO_NAME}-${{ matrix.target }}${{ matrix.ext }}
 
-  # Create GitHub release with built binaries
   github_release:
     name: Create GitHub Release
     needs: github_build
