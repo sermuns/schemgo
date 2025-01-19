@@ -1,0 +1,90 @@
+# Based on https://github.com/badboy/mdbook-toc/blob/main/.github/workflows/deploy.yml
+
+name: Build and release
+
+on:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  github_build:
+    name: Build release binaries
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - linux/amd64
+          - linux/arm64
+          - darwin/amd64
+          - darwin/arm64
+          - windows/amd64
+        include:
+          - target: linux/amd64
+            os: ubuntu-latest
+            ext: .tar.gz
+          - target: linux/arm64
+            os: ubuntu-latest
+            ext: .tar.gz
+          - target: darwin/amd64
+            os: macOS-latest
+            ext: .tar.gz
+          - target: darwin/arm64
+            os: macOS-latest
+            ext: .tar.gz
+          - target: windows/amd64
+            os: windows-latest
+            ext: .zip
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Setup | Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup | Go
+        uses: actions/setup-go@v5
+
+      - name: Setup | Get repository name
+        run: echo "REPO_NAME=$(basename ${{ github.repository }})" >> $GITHUB_ENV
+
+      - name: Build | Cross-compile
+        run: |
+          mkdir -p dist
+          if [ "${{ matrix.target }}" = "windows/amd64" ]; then
+            GOOS=windows GOARCH=amd64 go build -o dist/${REPO_NAME}-${{ matrix.target }}${{ matrix.ext }}
+          else
+            GOOS=${{ matrix.target%/* }} GOARCH=${{ matrix.target#*/ }} go build -o dist/${REPO_NAME}-${{ matrix.target }}${{ matrix.ext }}
+          fi
+
+      - name: Post Setup | Strip binaries [-nix]
+        if: matrix.os != 'windows-latest'
+        run: |
+          strip dist/${REPO_NAME}-${{ matrix.target }}${{ matrix.ext }}
+
+      - name: Post Setup | Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.repository }}-${{ matrix.target }}
+          path: dist/${REPO_NAME}-${{ matrix.target }}${{ matrix.ext }}
+
+  # Create GitHub release with built binaries
+  github_release:
+    name: Create GitHub Release
+    needs: github_build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup | Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup | Download artifacts
+        uses: actions/download-artifact@v4
+
+      - name: Setup | Generate release notes
+        run: git log -1 --pretty='%s' > RELEASE.md
+
+      - name: Build | Publish
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*
+          body_path: RELEASE.md
+        # env:
+        #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
