@@ -66,19 +66,32 @@ The circuit diagram is created as `simple.svg`:
   - [x] `build` exports svg file
   - [x] `serve` serves a development website for live-preview
 - [ ] Components
+  - [ ] Optional style string on tags
+  - [ ] Use interfaces?
   - [ ] (Better way of defining appearances... maybe external files?)
   - [ ] Separate 'line' and 'point' components.
-  - [x] Wire
-  - [x] Resistor
-  - [x] Battery
-  - [x] Capacitor
-  - [ ] Inductors
-  - [ ] Diodes
+  - [ ] multiple terminal: named anchors on components?
+  - [ ] More components
+    - [x] Battery
+    - [x] Resistor
+    - [ ] Inductors
+    - [x] Capacitor
+    - [x] Node (dot)
+    - [ ] Voltage source
+    - [ ] Current source
+    - [ ] Diodes
+    - [ ] Transistors
+    - [ ] Amperemeter
+    - [ ] Voltmeter
+    - [ ] Switch
+    - [ ] GND (and 5V)?
 - [x] Comments with `#`
 - [ ] `@set` statement to change global defaults (stroke width, padding, color)
+- [ ] set standard (IEC, IEEE) on elemnt, using `set`
 - [ ] Labels
   - [ ] `typst` math
 - [ ] Element attributes
   - [ ] ID for symbolic reference
 - [ ] Exporting to pdf, png, jpg, webp
 - [ ] Syntax highlighting, LSP
+- [ ] Logic gates
