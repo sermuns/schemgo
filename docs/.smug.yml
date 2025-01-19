@@ -1,0 +1,10 @@
+session: schemgo
+
+root: .
+
+windows:
+  - name: vim
+
+  - name: mkdocs
+    commands:
+      - mkdocs serve --open
