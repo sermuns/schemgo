@@ -5,7 +5,7 @@ name: Build and release
 on:
   push:
     tags:
-      - "*"
+      - "v*"
 
 jobs:
   github_build:
