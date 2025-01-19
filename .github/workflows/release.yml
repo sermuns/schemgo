@@ -11,10 +11,8 @@ env:
 
 on:
   push:
-    branches:
-      - main
-    # tags:
-    #   - "v*"
+    tags:
+      - "v*"
 
 jobs:
   github_build:
