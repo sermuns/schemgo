@@ -4,6 +4,9 @@
 <h1>Documentation for <code>schemgo</code></h1>
 </div>
 
+!!! note
+    This tool is under active development and is not currently in a usable state. Stay tuned!
+
 This website is a reference for how to use the tool, and contains many [examples and common use cases](examples.md). It also lists out all the functionality and a [gallery of components available](components.md).
 
 Maybe you just want to [install the tool](installation.md)?

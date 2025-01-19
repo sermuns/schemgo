@@ -1,0 +1,8 @@
+p > img {
+  display: block;
+  margin: auto;
+}
+
+body[data-md-color-scheme="slate"] main img[src$=".svg"]:not([src$="banner.svg"]) {
+  filter: invert(1);
+}

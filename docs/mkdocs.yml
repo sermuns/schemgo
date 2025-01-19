@@ -12,6 +12,8 @@ nav:
 
 docs_dir: src
 site_dir: public
+extra_css:
+  - style.css
 
 theme:
   name: material
@@ -20,13 +22,11 @@ theme:
   features: 
     - content.code.copy
   palette:
-    # Palette toggle for light mode
     - media: "(prefers-color-scheme: light)"
       scheme: default 
       toggle:
         icon: material/weather-sunny
         name: Switch to dark mode
-    # Palette toggle for dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
       toggle:
@@ -38,12 +38,9 @@ extra:
     - icon: fontawesome/brands/github 
       link: https://github.com/sermuns/schemgo
 
-# plugins:
-#   - search
-
 markdown_extensions:
-  # - footnotes
-  # - admonition
+  - footnotes
+  - admonition
   - pymdownx.highlight:
       anchor_linenums: true
       line_spans: __span
