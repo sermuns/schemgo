@@ -46,16 +46,19 @@ jobs:
       - name: Setup | Get repository name
         run: echo "REPO_NAME=$(basename ${{ github.repository }})" >> $GITHUB_ENV
 
-      - name: Build | Cross-compile
+      - name: Build (Windows)
+        if: matrix.target == 'x86_64-pc-windows-msvc'
         run: |
           mkdir -p dist
-          if [ "${{ matrix.target }}" = "windows/amd64" ]; then
-            GOOS=windows GOARCH=amd64 go build -o dist/${REPO_NAME}-${{ matrix.target }}${{ matrix.ext }}
-          else
-            GOOS=${{ matrix.target%/* }} GOARCH=${{ matrix.target#*/ }} go build -o dist/${REPO_NAME}-${{ matrix.target }}${{ matrix.ext }}
-          fi
+          GOOS=windows GOARCH=amd64 go build -o dist/${REPO_NAME}-${{ matrix.target }}.exe
 
-      - name: Post Setup | Strip binaries [-nix]
+      - name: Build (Other Targets)
+        if: matrix.target != 'x86_64-pc-windows-msvc'
+        run: |
+          mkdir -p dist
+          GOOS=${{ matrix.target%/* }} GOARCH=${{ matrix.target#*/ }} go build -o dist/${REPO_NAME}-${{ matrix.target }}
+
+      - name: Post Setup | Strip binaries (-nix)
         if: matrix.os != 'windows-latest'
         run: |
           strip dist/${REPO_NAME}-${{ matrix.target }}${{ matrix.ext }}
@@ -86,5 +89,3 @@ jobs:
         with:
           files: dist/*
           body_path: RELEASE.md
-        # env:
-        #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
