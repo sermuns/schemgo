@@ -1,47 +1,53 @@
 site_name: schemgo
 
+nav:
+  - Home: index.md
+  - Overview: overview.md
+  - Installation: installation.md
+  - Tutorial:
+    - Getting started: getting-started.md
+  - Reference:
+    - Components: components.md
+  - Examples: examples.md
+
 docs_dir: src
 site_dir: public
-
-repo_url: https://github.com/sermuns/schemgo
 
 theme:
   name: material
   favicon: media/logo.svg
   logo: media/logo.svg
-  # features: 
-  #   - header.autohide
-  #   - navigation.tabs
-  #   - navigation.footer
-  #   - content.action.edit
-  #   - navigation.sections
-  # palette:
-  #   # Palette toggle for light mode
-  #   - media: "(prefers-color-scheme: light)"
-  #     scheme: default 
-  #     primary: yellow
-  #     accent: yellow
-  #     toggle:
-  #       icon: material/brightness-7
-  #       name: Switch to dark mode
-  #   # Palette toggle for dark mode
-  #   - media: "(prefers-color-scheme: dark)"
-  #     scheme: slate
-  #     primary: yellow
-  #     accent: yellow
-  #     toggle:
-  #       icon: material/brightness-4
-  #       name: Switch to system preference
-  # icon: 
-  #   edit: material/pencil
-  #   view: material/eye
+  features: 
+    - content.code.copy
+  palette:
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default 
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to dark mode
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/weather-night
+        name: Switch to light mode
 
+extra:
+  social:
+    - icon: fontawesome/brands/github 
+      link: https://github.com/sermuns/schemgo
 
-plugins:
-  - search
+# plugins:
+#   - search
 
 markdown_extensions:
-  - footnotes
-  - admonition
-  - pymdownx.details
+  # - footnotes
+  # - admonition
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
   - pymdownx.superfences
