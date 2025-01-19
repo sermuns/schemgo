@@ -67,7 +67,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.REPO_NAME }}-${{ matrix.target }}
-          path: dist
+          path: dist/*
 
   github_release:
     name: Create GitHub Release
@@ -81,8 +81,10 @@ jobs:
 
       - name: Setup | Download artifacts
         uses: actions/download-artifact@v4
+        with:
+          path: dist/.
 
-      - run: ls
+      - run: tree
 
       - name: Setup | Generate release notes
         run: git log -1 --pretty='%s' > RELEASE.md
