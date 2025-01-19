@@ -6,6 +6,9 @@ concurrency:
   group: release
   cancel-in-progress: true
 
+env:
+  REPO_NAME: schemgo
+
 on:
   push:
     branches:
@@ -43,6 +46,7 @@ jobs:
             name: x86_64-pc-windows-msvc.zip
     runs-on: ${{ matrix.os }}
     steps:
+
       - name: Setup | Checkout
         uses: actions/checkout@v4
 
@@ -50,9 +54,6 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: 'stable'
-
-      - name: Setup | Get repository name
-        run: echo "REPO_NAME=$(basename ${{ github.repository }})" >> $GITHUB_ENV
 
       - name: Build
         run: go build -ldflags "-s -w" -o dist/${REPO_NAME}-${{ matrix.target }}
