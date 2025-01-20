@@ -58,19 +58,38 @@ The circuit diagram is created as `simple.svg`:
 > [!NOTE]
 > Only svg output is supported at the moment.
 
-## To-do
-- [x] Handle piped content (stdin, stdout)
-  - [ ] mdBook preprocessor
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+---
+
+## Roadmap
+### ✅ Done
 - [x] Push and pop
 - [x] Subcommands
   - [x] `build` exports svg file
   - [x] `serve` serves a development website for live-preview
-- [ ] Components
-  - [ ] Optional style string on tags
-  - [ ] Use interfaces?
-  - [ ] (Better way of defining appearances... maybe external files?)
+- [x] Comments with `#`
+
+### 🎯 High priority
+- [x] Handle piped content (stdin, stdout)
+  - [ ] mdBook preprocessor
+- [ ] **Utilise polymorphism on components**
+  > Right now the situation is unmaintainable...
   - [ ] Separate 'line' and 'point' components.
+  - [ ] Use interfaces!
+
+### Normal priority
+- [ ] Components (I won't attempt before situation with polymorphsim is under control.)
+  - [ ] Optional style string on tags
+  - [ ] (Better way of defining appearances... maybe external files?)
   - [ ] multiple terminal: named anchors on components?
+
   - [ ] More components
     - [x] Battery
     - [x] Resistor
@@ -85,7 +104,6 @@ The circuit diagram is created as `simple.svg`:
     - [ ] Voltmeter
     - [ ] Switch
     - [ ] GND (and 5V)?
-- [x] Comments with `#`
 - [ ] `@set` statement to change global defaults (stroke width, padding, color)
 - [ ] set standard (IEC, IEEE) on elemnt, using `set`
 - [ ] Labels
