@@ -53,4 +53,34 @@ var ElemTypeToRenderFunc = map[string]func(*Schematic, Point, Point){
 		const radius = DefaultLength / 25
 		s.addCircle(p1.X, p1.Y, radius)
 	},
+	"capacitor": func(s *Schematic, p1, p2 Point) {
+		const (
+			gap    = DefaultLength / 6
+			height = DefaultLength / 3
+		)
+
+		distance := p1.distanceTo(p2)
+		negTermX := p1.X + distance/2 - gap/2
+		posTermX := negTermX + gap
+
+		s.addAndPivotPath(p1, p2, createPath(
+			'M', p1.X, p1.Y,
+			'L', negTermX, p1.Y,
+			'M', negTermX, p1.Y-height/2,
+			'L', negTermX, p1.Y+height/2,
+			'M', posTermX, p1.Y-height/2,
+			'L', posTermX, p1.Y+height/2,
+			'M', posTermX, p1.Y,
+			'L', p1.X+distance, p1.Y,
+		))
+	},
+}
+
+var CommandTypeToFunc = map[string]func(*Schematic){
+	"push": func(s *Schematic) {
+		s.Push(s.Pos)
+	},
+	"pop": func(s *Schematic) {
+		s.Pos = s.Pop()
+	},
 }

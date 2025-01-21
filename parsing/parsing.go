@@ -3,6 +3,10 @@ package parsing
 import (
 	"github.com/alecthomas/participle/v2"
 	"github.com/alecthomas/participle/v2/lexer"
+	"github.com/sermuns/schemgo/drawing"
+	"maps"
+	"slices"
+	"strings"
 )
 
 type Schematic struct {
@@ -15,13 +19,13 @@ type Entry struct {
 }
 
 type Element struct {
-	Type       string     `@Ident`
+	Type       string     `@Element`
 	Properties []Property `('(' (@@ (',' @@)*)? ')')?`
 	Actions    []Action   `( @@+ )?`
 }
 
 type Command struct {
-	Type       string     `@Ident`
+	Type       string     `@Command`
 	Properties []Property `('(' (@@ (',' @@)*)? ')')?`
 }
 
@@ -35,8 +39,14 @@ type Action struct {
 	Units float64 `('(' @Number? ')')?`
 }
 
+func mapKeysStringJoin[V any](m map[string]V) string {
+	return strings.Join(slices.Collect(maps.Keys(m)), "|")
+}
+
 var (
 	schemGoLexer = lexer.MustSimple([]lexer.SimpleRule{
+		{"Element", `(` + mapKeysStringJoin(drawing.ElemTypeToRenderFunc) + `)`},
+		{"Command", `(` + mapKeysStringJoin(drawing.CommandTypeToFunc) + `)`},
 		{"Ident", `[a-zA-Z_][a-zA-Z_0-9]*`},
 		{"String", `"[^"]*"`},
 		{"Number", `[-+]?[.0-9]+\b`},
