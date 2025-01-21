@@ -1,14 +1,12 @@
 package parsing
 
 import (
-	"strings"
-
 	"github.com/alecthomas/participle/v2"
 	"github.com/alecthomas/participle/v2/lexer"
 )
 
 type Schematic struct {
-	Entries []*Entry `@@*`
+	Entries []Entry `@@*`
 }
 
 type Entry struct {
@@ -17,13 +15,13 @@ type Entry struct {
 }
 
 type Element struct {
-	Type       string     `@Element`
+	Type       string     `@Ident`
 	Properties []Property `('(' (@@ (',' @@)*)? ')')?`
 	Actions    []Action   `( @@+ )?`
 }
 
 type Command struct {
-	Type       string     `@Command`
+	Type       string     `@Ident`
 	Properties []Property `('(' (@@ (',' @@)*)? ')')?`
 }
 
@@ -33,27 +31,12 @@ type Property struct {
 }
 
 type Action struct {
-	Type  string  `'.' @Action`
+	Type  string  `'.' @Ident`
 	Units float64 `('(' @Number? ')')?`
 }
 
 var (
-	SupportedElements = []string{
-		"resistor", "battery", "line", "capacitor", "dot",
-	}
-	SupportedActions = []string{
-		"right", "up", "left", "down",
-	}
-	SupportedCommands = []string{
-		"push", "pop",
-	}
-)
-
-var (
 	schemGoLexer = lexer.MustSimple([]lexer.SimpleRule{
-		{"Element", `(` + strings.Join(SupportedElements, "|") + `)`},
-		{"Action", `(` + strings.Join(SupportedActions, "|") + `)`},
-		{"Command", `(` + strings.Join(SupportedCommands, "|") + `)`},
 		{"Ident", `[a-zA-Z_][a-zA-Z_0-9]*`},
 		{"String", `"[^"]*"`},
 		{"Number", `[-+]?[.0-9]+\b`},
