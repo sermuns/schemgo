@@ -3,12 +3,11 @@ air = "latest"
 
 [tasks.build]
 alias = 'b'
-run = 'go run . build {{"examples/"~arg(i=1,name="input_file")}} -o build/out.svg'
-sources = [
-	'**/*.go',
-	'examples/'
-]
-outputs = { auto = true }
+run = 'go run . build -o build/out.svg'
+
+[tasks.serve]
+alias = 's'
+run = 'go run . serve'
 
 [tasks.clean]
 alias = 'c'
