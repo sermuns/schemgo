@@ -71,11 +71,10 @@ func updateSchematic() {
 	}
 
 	if bytes.Equal(inContent, latestInContent) {
-		log.Println("content equal, dont care")
 		return
 	}
 
-	log.Println("Updating schematic")
+	log.Println("Regenerating schematic")
 
 	latestInContent = inContent
 	latestSchematic = writeSchematic(inContent)

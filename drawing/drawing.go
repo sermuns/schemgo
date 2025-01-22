@@ -4,27 +4,24 @@ import (
 	"bytes"
 	"fmt"
 	"math"
-
-	"github.com/sermuns/schemgo/parsing"
+	"os"
+	"strings"
+	"unicode"
 )
 
 const (
-	unitLength         = 100
-	defaultLength      = 1 * unitLength
-	defaultStrokeWidth = 5
-)
-
-var (
-	stack Stack
+	UnitLength         = 100
+	DefaultLength      = 1 * UnitLength
+	DefaultStrokeWidth = 5
 )
 
 type Point struct {
-	x, y float64
+	X, Y float64
 }
 
 type command struct {
 	letter rune
-	pos    Point
+	points []Point
 }
 
 type Path []command
@@ -35,119 +32,91 @@ type Circle struct {
 }
 
 type Schematic struct {
-	pos     Point
-	paths   []*Path
-	circles []*Circle
+	posStack Stack
+	Pos      Point
+	Paths    []*Path
+	Circles  []*Circle
 }
 
-// `input`:s elements are grouped into triplets and parsed as a path
+func (s *Schematic) Push(p Point) {
+	s.posStack.Push(s.Pos)
+}
+
+func (s *Schematic) Pop() Point {
+	return s.posStack.Pop()
+}
+
 // i'm sorry this is so fucked up
 func createPath(input ...any) Path {
-	if len(input)%3 != 0 {
-		panic("createPath: input must be a multiple of 3")
-	}
+	var path Path
+	var thisCommand command
 
-	newPath := Path{}
-	newCommand := command{}
-	for i, part := range input {
-		partType := i % 3
-		switch partType {
-		case 0:
-			newCommand.letter = part.(rune)
-		case 1:
-			newCommand.pos.x = part.(float64)
-		case 2:
-			newCommand.pos.y = part.(float64)
-			newPath = append(newPath, newCommand)
+	for _, part := range input {
+		switch v := part.(type) {
+		case rune: // If it's a command letter
+			// Append the current command to the path if it has a letter
+			if thisCommand.letter != 0 {
+				path = append(path, thisCommand)
+			}
+			// Start a new command
+			thisCommand = command{letter: v}
+
+		case Point: // If it's a point
+			if thisCommand.letter == 0 {
+				fmt.Println("createPath: point provided before command letter")
+				os.Exit(1)
+			}
+			thisCommand.points = append(thisCommand.points, v)
+
+		default: // Unknown type
+			fmt.Printf("createPath: unknown type %T\n", part)
+			os.Exit(1)
 		}
 	}
-	return newPath
+
+	// Append the final command if valid
+	if thisCommand.letter != 0 {
+		path = append(path, thisCommand)
+	}
+
+	return path
 }
 
 func (s *Schematic) addPath(path Path) {
-	s.paths = append(s.paths, &path)
+	s.Paths = append(s.Paths, &path)
 }
 
 func (s *Schematic) addCircle(x, y, radius float64) {
-	s.circles = append(s.circles, &Circle{
+	s.Circles = append(s.Circles, &Circle{
 		centerPos: Point{x, y},
 		radius:    radius,
 	})
 }
 
 func (s *Schematic) addAndPivotPath(start, end Point, path Path) {
-	angle := math.Atan2(end.y-start.y, end.x-start.x)
+	angle := math.Atan2(end.Y-start.Y, end.X-start.X)
 	path.pivotAround(start, angle)
 	s.addPath(path)
 }
 
 func (this *Point) distanceTo(other Point) float64 {
-	return math.Hypot(other.x-this.x, other.y-this.y)
+	return math.Hypot(other.X-this.X, other.Y-this.Y)
 }
 
 func (path *Path) pivotAround(pivot Point, angle float64) {
 	sin, cos := math.Sincos(angle)
 	for i := range *path {
-		(*path)[i].pos.pivotAround(pivot, sin, cos)
+		for j := range (*path)[i].points {
+			(*path)[i].points[j].pivotAround(pivot, sin, cos)
+		}
 	}
 }
 
 func (p *Point) pivotAround(pivot Point, sin, cos float64) {
-	dx := p.x - pivot.x
-	dy := p.y - pivot.y
-	p.x = pivot.x + dx*cos - dy*sin
-	p.y = pivot.y + dx*sin + dy*cos
-}
-
-func (s *Schematic) HandleEntry(entry *parsing.Entry) {
-	p1 := Point{s.pos.x, s.pos.y}
-
-	switch entry.Command.Type {
-	case "push":
-		stack.Push(p1)
-		return
-	case "pop":
-		s.pos = stack.Pop()
-		return
-	}
-
-	elem := entry.Element
-
-	for _, action := range elem.Actions {
-
-		value := action.Units * unitLength
-		if value == 0 {
-			value = defaultLength
-		}
-
-		switch action.Type {
-		case "right":
-			s.Translate(value, 0)
-		case "up":
-			s.Translate(0, -value)
-		case "left":
-			s.Translate(-value, 0)
-		case "down":
-			s.Translate(0, value)
-		}
-	}
-
-	p2 := Point{s.pos.x, s.pos.y}
-
-	switch elem.Type {
-	case "resistor":
-		s.resistor(p1, p2)
-	case "battery":
-		s.battery(p1, p2)
-	case "line":
-		s.line(p1, p2)
-	case "capacitor":
-		s.capacitor(p1, p2)
-	case "dot":
-		s.dot(p1)
-	default:
-		fmt.Printf("unimplemented element type: %s\n", elem.Type)
-	}
+	dx := p.X - pivot.X
+	dy := p.Y - pivot.Y
+	p.X = pivot.X + dx*cos - dy*sin
+	p.Y = pivot.Y + dx*sin + dy*cos
 }
 
 func NewSchematic() *Schematic {
@@ -155,13 +124,13 @@ func NewSchematic() *Schematic {
 }
 
 func (s *Schematic) Translate(dx, dy float64) *Schematic {
-	s.pos.x += dx
-	s.pos.y += dy
+	s.Pos.X += dx
+	s.Pos.Y += dy
 	return s
 }
 
-// FIXME: this is one ugly function.. 
-// we probably need to change the way we're handling svg 
+// FIXME: this is one ugly function..
+// we probably need to change the way we're handling svg
 // elements. Can't have duplicated logic for path and circle and god
 // knows what more elements...
 func (s *Schematic) Normalise() (width, height float64) {
@@ -169,40 +138,56 @@ func (s *Schematic) Normalise() (width, height float64) {
 	maxX, maxY := -math.MaxFloat64, -math.MaxFloat64
 
 	// find bounds of paths
-	for _, path := range s.paths {
+	for _, path := range s.Paths {
 		for _, command := range *path {
-			minX = min(minX, command.pos.x)
-			minY = min(minY, command.pos.y)
-			maxX = max(maxX, command.pos.x)
-			maxY = max(maxY, command.pos.y)
+			for _, point := range command.points {
+				minX = min(minX, point.X)
+				minY = min(minY, point.Y)
+				maxX = max(maxX, point.X)
+				maxY = max(maxY, point.Y)
+			}
 		}
 	}
-	
+
 	// find bounds for circles
-	for _, circle := range s.circles {
-		minX = min(minX, circle.centerPos.x-circle.radius)
-		minY = min(minY, circle.centerPos.y-circle.radius)
-		maxX = max(maxX, circle.centerPos.x+circle.radius)
-		maxY = max(maxY, circle.centerPos.y+circle.radius)
+	for _, circle := range s.Circles {
+		minX = min(minX, circle.centerPos.X-circle.radius)
+		minY = min(minY, circle.centerPos.Y-circle.radius)
+		maxX = max(maxX, circle.centerPos.X+circle.radius)
+		maxY = max(maxY, circle.centerPos.Y+circle.radius)
 	}
 
 	// apply translation to all paths
-	for _, path := range s.paths {
-		for i := range *path {
-			(*path)[i].pos.x -= minX - defaultStrokeWidth
-			(*path)[i].pos.y -= minY - defaultStrokeWidth
+	for _, path := range s.Paths {
+		for i, pathCommand := range *path {
+			if unicode.IsLower(pathCommand.letter) {
+				continue
+			}
+			for j := range (*path)[i].points {
+				(*path)[i].points[j].X -= minX - DefaultStrokeWidth
+				(*path)[i].points[j].Y -= minY - DefaultStrokeWidth
+			}
 		}
 	}
 
 	// apply translation to all circles
-	for _, circle := range s.circles {
-		circle.centerPos.x -= minX - defaultStrokeWidth
-		circle.centerPos.y -= minY - defaultStrokeWidth
+	for _, circle := range s.Circles {
+		circle.centerPos.X -= minX - DefaultStrokeWidth
+		circle.centerPos.Y -= minY - DefaultStrokeWidth
 	}
 
-	width = maxX - minX + defaultStrokeWidth*2
-	height = maxY - minY + defaultStrokeWidth*2
+	width = maxX - minX + DefaultStrokeWidth*2
+	height = maxY - minY + DefaultStrokeWidth*2
 	return width, height
+}
+
+func (c *command) asString() string {
+	var sb strings.Builder
+	sb.WriteString(fmt.Sprintf("%c", c.letter))
+	for _, point := range c.points {
+		sb.WriteString(fmt.Sprintf(" %g,%g ", point.X, point.Y))
+	}
+	return sb.String()
 }
 
 func (s *Schematic) End(buf *bytes.Buffer) {
@@ -213,25 +198,21 @@ func (s *Schematic) End(buf *bytes.Buffer) {
 		int(width), int(height),
 	))
 
-	for _, path := range s.paths {
+	for _, path := range s.Paths {
 		buf.WriteString(`<path d="`)
-		for _, command := range *path {
-			buf.WriteString(fmt.Sprintf("%c %g %g ",
-				command.letter,
-				command.pos.x,
-				command.pos.y,
-			))
+		for _, pathCommand := range *path {
+			buf.WriteString(pathCommand.asString())
 		}
 		buf.WriteString(fmt.Sprintf(
 			`" style="stroke:black; stroke-width:%d; stroke-linecap: square; fill:none;"></path>`,
-			defaultStrokeWidth,
+			DefaultStrokeWidth,
 		))
 	}
 
-	for _, circle := range s.circles {
+	for _, circle := range s.Circles {
 		buf.WriteString(fmt.Sprintf(
 			`<circle cx="%g" cy="%g" r="%g" fill="white" stroke="black" stroke-width="%d"></circle>`,
-			circle.centerPos.x, circle.centerPos.y, circle.radius, defaultStrokeWidth,
+			circle.centerPos.X, circle.centerPos.Y, circle.radius, DefaultStrokeWidth,
 		))
 	}
 
