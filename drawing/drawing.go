@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"fmt"
 	"math"
+	"os"
+	"strings"
 )
 
 const (
@@ -18,7 +20,7 @@ type Point struct {
 
 type command struct {
 	letter rune
-	pos    Point
+	points []Point
 }
 
 type Path []command
@@ -43,28 +45,40 @@ func (s *Schematic) Pop() Point {
 	return s.posStack.Pop()
 }
 
-// `input`:s elements are grouped into triplets and parsed as a path
 // i'm sorry this is so fucked up
 func createPath(input ...any) Path {
-	if len(input)%3 != 0 {
-		panic("createPath: input must be a multiple of 3")
-	}
+	var path Path
+	var thisCommand command
 
-	newPath := Path{}
-	newCommand := command{}
-	for i, part := range input {
-		partType := i % 3
-		switch partType {
-		case 0:
-			newCommand.letter = part.(rune)
-		case 1:
-			newCommand.pos.X = part.(float64)
-		case 2:
-			newCommand.pos.Y = part.(float64)
-			newPath = append(newPath, newCommand)
+	for _, part := range input {
+		switch v := part.(type) {
+		case rune: // If it's a command letter
+			// Append the current command to the path if it has a letter
+			if thisCommand.letter != 0 {
+				path = append(path, thisCommand)
+			}
+			// Start a new command
+			thisCommand = command{letter: v}
+
+		case Point: // If it's a point
+			if thisCommand.letter == 0 {
+				fmt.Println("createPath: point provided before command letter")
+				os.Exit(1)
+			}
+			thisCommand.points = append(thisCommand.points, v)
+
+		default: // Unknown type
+			fmt.Printf("createPath: unknown type %T\n", part)
+			os.Exit(1)
 		}
 	}
-	return newPath
+
+	// Append the final command if valid
+	if thisCommand.letter != 0 {
+		path = append(path, thisCommand)
+	}
+
+	return path
 }
 
 func (s *Schematic) addPath(path Path) {
@@ -91,7 +105,9 @@ func (this *Point) distanceTo(other Point) float64 {
 func (path *Path) pivotAround(pivot Point, angle float64) {
 	sin, cos := math.Sincos(angle)
 	for i := range *path {
-		(*path)[i].pos.pivotAround(pivot, sin, cos)
+		for j := range (*path)[i].points {
+			(*path)[i].points[j].pivotAround(pivot, sin, cos)
+		}
 	}
 }
 
@@ -123,10 +139,12 @@ func (s *Schematic) Normalise() (width, height float64) {
 	// find bounds of paths
 	for _, path := range s.Paths {
 		for _, command := range *path {
-			minX = min(minX, command.pos.X)
-			minY = min(minY, command.pos.Y)
-			maxX = max(maxX, command.pos.X)
-			maxY = max(maxY, command.pos.Y)
+			for _, point := range command.points {
+				minX = min(minX, point.X)
+				minY = min(minY, point.Y)
+				maxX = max(maxX, point.X)
+				maxY = max(maxY, point.Y)
+			}
 		}
 	}
 
@@ -141,8 +159,10 @@ func (s *Schematic) Normalise() (width, height float64) {
 	// apply translation to all paths
 	for _, path := range s.Paths {
 		for i := range *path {
-			(*path)[i].pos.X -= minX - DefaultStrokeWidth
-			(*path)[i].pos.Y -= minY - DefaultStrokeWidth
+			for j := range (*path)[i].points {
+				(*path)[i].points[j].X -= minX - DefaultStrokeWidth
+				(*path)[i].points[j].Y -= minY - DefaultStrokeWidth
+			}
 		}
 	}
 
@@ -157,6 +177,15 @@ func (s *Schematic) Normalise() (width, height float64) {
 	return width, height
 }
 
+func (c *command) asString() string {
+	var sb strings.Builder
+	sb.WriteString(fmt.Sprintf("%c", c.letter))
+	for _, point := range c.points {
+		sb.WriteString(fmt.Sprintf(" %g %g ", point.X, point.Y))
+	}
+	return sb.String()
+}
+
 func (s *Schematic) End(buf *bytes.Buffer) {
 	width, height := s.Normalise()
 
@@ -167,12 +196,8 @@ func (s *Schematic) End(buf *bytes.Buffer) {
 
 	for _, path := range s.Paths {
 		buf.WriteString(`<path d="`)
-		for _, command := range *path {
-			buf.WriteString(fmt.Sprintf("%c %g %g ",
-				command.letter,
-				command.pos.X,
-				command.pos.Y,
-			))
+		for _, pathCommand := range *path {
+			buf.WriteString(pathCommand.asString())
 		}
 		buf.WriteString(fmt.Sprintf(
 			`" style="stroke:black; stroke-width:%d; stroke-linecap: square; fill:none;"></path>`,

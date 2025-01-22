@@ -3,8 +3,8 @@ package drawing
 var ElemTypeToRenderFunc = map[string]func(*Schematic, Point, Point){
 	"line": func(s *Schematic, p1, p2 Point) {
 		s.addPath(createPath(
-			'M', p1.X, p1.Y,
-			'L', p2.X, p2.Y,
+			'M', Point{p1.X, p1.Y},
+			'L', Point{p2.X, p2.Y},
 		))
 	},
 	"resistor": func(s *Schematic, p1, p2 Point) {
@@ -16,15 +16,15 @@ var ElemTypeToRenderFunc = map[string]func(*Schematic, Point, Point){
 		distance := p1.distanceTo(p2)
 
 		s.addAndPivotPath(p1, p2, createPath(
-			'M', p1.X, p1.Y,
-			'L', p1.X+distance/2-width/2, p1.Y,
-			'L', p1.X+distance/2-width/2, p1.Y+height/2,
-			'L', p1.X+distance/2+width/2, p1.Y+height/2,
-			'L', p1.X+distance/2+width/2, p1.Y-height/2,
-			'L', p1.X+distance/2-width/2, p1.Y-height/2,
-			'L', p1.X+distance/2-width/2, p1.Y,
-			'M', p1.X+distance/2+width/2, p1.Y,
-			'L', p1.X+distance, p1.Y,
+			'M', Point{p1.X, p1.Y},
+			'L', Point{p1.X+distance/2-width/2, p1.Y},
+			'L', Point{p1.X+distance/2-width/2, p1.Y+height/2},
+			'L', Point{p1.X+distance/2+width/2, p1.Y+height/2},
+			'L', Point{p1.X+distance/2+width/2, p1.Y-height/2},
+			'L', Point{p1.X+distance/2-width/2, p1.Y-height/2},
+			'L', Point{p1.X+distance/2-width/2, p1.Y},
+			'M', Point{p1.X+distance/2+width/2, p1.Y},
+			'L', Point{p1.X+distance, p1.Y},
 		))
 	},
 	"battery": func(s *Schematic, p1, p2 Point) {
@@ -39,14 +39,14 @@ var ElemTypeToRenderFunc = map[string]func(*Schematic, Point, Point){
 		posTermX := negTermX + termGap
 
 		s.addAndPivotPath(p1, p2, createPath(
-			'M', p1.X, p1.Y,
-			'L', negTermX, p1.Y,
-			'M', negTermX, p1.Y-negTermHeight/2,
-			'L', negTermX, p1.Y+negTermHeight/2,
-			'M', posTermX, p1.Y-posTermHeight/2,
-			'L', posTermX, p1.Y+posTermHeight/2,
-			'M', posTermX, p1.Y,
-			'L', p1.X+distance, p1.Y,
+			'M', Point{p1.X, p1.Y},
+			'L', Point{negTermX, p1.Y},
+			'M', Point{negTermX, p1.Y-negTermHeight/2},
+			'L', Point{negTermX, p1.Y+negTermHeight/2},
+			'M', Point{posTermX, p1.Y-posTermHeight/2},
+			'L', Point{posTermX, p1.Y+posTermHeight/2},
+			'M', Point{posTermX, p1.Y},
+			'L', Point{p1.X+distance, p1.Y},
 		))
 	},
 	"dot": func(s *Schematic, p1, p2 Point) {
@@ -64,14 +64,14 @@ var ElemTypeToRenderFunc = map[string]func(*Schematic, Point, Point){
 		posTermX := negTermX + gap
 
 		s.addAndPivotPath(p1, p2, createPath(
-			'M', p1.X, p1.Y,
-			'L', negTermX, p1.Y,
-			'M', negTermX, p1.Y-height/2,
-			'L', negTermX, p1.Y+height/2,
-			'M', posTermX, p1.Y-height/2,
-			'L', posTermX, p1.Y+height/2,
-			'M', posTermX, p1.Y,
-			'L', p1.X+distance, p1.Y,
+			'M', Point{p1.X, p1.Y},
+			'L', Point{negTermX, p1.Y},
+			'M', Point{negTermX, p1.Y-height/2},
+			'L', Point{negTermX, p1.Y+height/2},
+			'M', Point{posTermX, p1.Y-height/2},
+			'L', Point{posTermX, p1.Y+height/2},
+			'M', Point{posTermX, p1.Y},
+			'L', Point{p1.X+distance, p1.Y},
 		))
 	},
 }
