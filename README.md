@@ -77,6 +77,7 @@ The circuit diagram is created as `simple.svg`:
 - [x] Comments with `#`
 
 ### 🎯 High priority
+- [ ] Add support for relative pathcommmand movements (`q` instead of `Q` e.g.), currently rotating them FUCKS everythign.
 - [x] Handle piped content (stdin, stdout)
   - [ ] mdBook preprocessor
 - [ ] **Utilise polymorphism on components**
