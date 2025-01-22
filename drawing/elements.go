@@ -17,14 +17,14 @@ var ElemTypeToRenderFunc = map[string]func(*Schematic, Point, Point){
 
 		s.addAndPivotPath(p1, p2, createPath(
 			'M', Point{p1.X, p1.Y},
-			'L', Point{p1.X+distance/2-width/2, p1.Y},
-			'L', Point{p1.X+distance/2-width/2, p1.Y+height/2},
-			'L', Point{p1.X+distance/2+width/2, p1.Y+height/2},
-			'L', Point{p1.X+distance/2+width/2, p1.Y-height/2},
-			'L', Point{p1.X+distance/2-width/2, p1.Y-height/2},
-			'L', Point{p1.X+distance/2-width/2, p1.Y},
-			'M', Point{p1.X+distance/2+width/2, p1.Y},
-			'L', Point{p1.X+distance, p1.Y},
+			'L', Point{p1.X + distance/2 - width/2, p1.Y},
+			'L', Point{p1.X + distance/2 - width/2, p1.Y + height/2},
+			'L', Point{p1.X + distance/2 + width/2, p1.Y + height/2},
+			'L', Point{p1.X + distance/2 + width/2, p1.Y - height/2},
+			'L', Point{p1.X + distance/2 - width/2, p1.Y - height/2},
+			'L', Point{p1.X + distance/2 - width/2, p1.Y},
+			'M', Point{p1.X + distance/2 + width/2, p1.Y},
+			'L', Point{p1.X + distance, p1.Y},
 		))
 	},
 	"battery": func(s *Schematic, p1, p2 Point) {
@@ -41,12 +41,12 @@ var ElemTypeToRenderFunc = map[string]func(*Schematic, Point, Point){
 		s.addAndPivotPath(p1, p2, createPath(
 			'M', Point{p1.X, p1.Y},
 			'L', Point{negTermX, p1.Y},
-			'M', Point{negTermX, p1.Y-negTermHeight/2},
-			'L', Point{negTermX, p1.Y+negTermHeight/2},
-			'M', Point{posTermX, p1.Y-posTermHeight/2},
-			'L', Point{posTermX, p1.Y+posTermHeight/2},
+			'M', Point{negTermX, p1.Y - negTermHeight/2},
+			'L', Point{negTermX, p1.Y + negTermHeight/2},
+			'M', Point{posTermX, p1.Y - posTermHeight/2},
+			'L', Point{posTermX, p1.Y + posTermHeight/2},
 			'M', Point{posTermX, p1.Y},
-			'L', Point{p1.X+distance, p1.Y},
+			'L', Point{p1.X + distance, p1.Y},
 		))
 	},
 	"dot": func(s *Schematic, p1, p2 Point) {
@@ -66,12 +66,52 @@ var ElemTypeToRenderFunc = map[string]func(*Schematic, Point, Point){
 		s.addAndPivotPath(p1, p2, createPath(
 			'M', Point{p1.X, p1.Y},
 			'L', Point{negTermX, p1.Y},
-			'M', Point{negTermX, p1.Y-height/2},
-			'L', Point{negTermX, p1.Y+height/2},
-			'M', Point{posTermX, p1.Y-height/2},
-			'L', Point{posTermX, p1.Y+height/2},
+			'M', Point{negTermX, p1.Y - height/2},
+			'L', Point{negTermX, p1.Y + height/2},
+			'M', Point{posTermX, p1.Y - height/2},
+			'L', Point{posTermX, p1.Y + height/2},
 			'M', Point{posTermX, p1.Y},
-			'L', Point{p1.X+distance, p1.Y},
+			'L', Point{p1.X + distance, p1.Y},
+		))
+	},
+	"inductor": func(s *Schematic, p1, p2 Point) {
+		const (
+			width        = DefaultLength
+			coilLoopSize = width / 8
+		)
+
+		distance := p1.distanceTo(p2)
+
+		s.addAndPivotPath(p1, p2, createPath(
+			'M', Point{p1.X, p1.Y},
+			'l', Point{distance/2 - width/2, 0},
+
+			'q',
+			Point{0, -coilLoopSize},
+			Point{coilLoopSize, -coilLoopSize},
+			'q',
+			Point{coilLoopSize, 0},
+			Point{coilLoopSize, coilLoopSize},
+			'q',
+			Point{0, -coilLoopSize},
+			Point{coilLoopSize, -coilLoopSize},
+			'q',
+			Point{coilLoopSize, 0},
+			Point{coilLoopSize, coilLoopSize},
+			'q',
+			Point{0, -coilLoopSize},
+			Point{coilLoopSize, -coilLoopSize},
+			'q',
+			Point{coilLoopSize, 0},
+			Point{coilLoopSize, coilLoopSize},
+			'q',
+			Point{0, -coilLoopSize},
+			Point{coilLoopSize, -coilLoopSize},
+			'q',
+			Point{coilLoopSize, 0},
+			Point{coilLoopSize, coilLoopSize},
+
+			'L', Point{p1.X + distance, p1.Y},
 		))
 	},
 }

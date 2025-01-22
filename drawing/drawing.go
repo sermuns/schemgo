@@ -6,6 +6,7 @@ import (
 	"math"
 	"os"
 	"strings"
+	"unicode"
 )
 
 const (
@@ -158,7 +159,10 @@ func (s *Schematic) Normalise() (width, height float64) {
 
 	// apply translation to all paths
 	for _, path := range s.Paths {
-		for i := range *path {
+		for i, pathCommand := range *path {
+			if unicode.IsLower(pathCommand.letter) {
+				continue
+			}
 			for j := range (*path)[i].points {
 				(*path)[i].points[j].X -= minX - DefaultStrokeWidth
 				(*path)[i].points[j].Y -= minY - DefaultStrokeWidth
@@ -181,7 +185,7 @@ func (c *command) asString() string {
 	var sb strings.Builder
 	sb.WriteString(fmt.Sprintf("%c", c.letter))
 	for _, point := range c.points {
-		sb.WriteString(fmt.Sprintf(" %g %g ", point.X, point.Y))
+		sb.WriteString(fmt.Sprintf(" %g,%g ", point.X, point.Y))
 	}
 	return sb.String()
 }
