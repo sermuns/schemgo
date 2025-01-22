@@ -21,7 +21,7 @@ ubi -p sermuns/schemgo -i ~/.local/bin/
 [`mise`](https://mise.jdx.dev/getting-started.html) is (among other things) a fantastic tool for managing all your tools. It can use `ubi` as its backend:
 
 ```shell
-mise install ubi:sermuns/schemgo
+mise use ubi:sermuns/schemgo
 ```
 
 *This will install `schemgo` only in the current directory. To install globally, use `install -g`.*
