@@ -103,11 +103,18 @@ func (this *Point) distanceTo(other Point) float64 {
 	return math.Hypot(other.X-this.X, other.Y-this.Y)
 }
 
-func (path *Path) pivotAround(pivot Point, angle float64) {
+func (path *Path) pivotAround(pivotCenter Point, angle float64) {
 	sin, cos := math.Sincos(angle)
-	for i := range *path {
-		for j := range (*path)[i].points {
-			(*path)[i].points[j].pivotAround(pivot, sin, cos)
+	for i, pathCommand := range *path {
+		// lowercase indicates relative
+		if unicode.IsLower(pathCommand.letter) {
+			for j := range (*path)[i].points {
+				(*path)[i].points[j].pivotAround(Point{0, 0}, sin, cos)
+			}
+		} else {
+			for j := range (*path)[i].points {
+				(*path)[i].points[j].pivotAround(pivotCenter, sin, cos)
+			}
 		}
 	}
 }
@@ -130,21 +137,33 @@ func (s *Schematic) Translate(dx, dy float64) *Schematic {
 }
 
 // FIXME: this is one ugly function..
-// we probably need to change the way we're handling svg
-// elements. Can't have duplicated logic for path and circle and god
-// knows what more elements...
 func (s *Schematic) Normalise() (width, height float64) {
+
+	const padding = 5
+
 	minX, minY := math.MaxFloat64, math.MaxFloat64
 	maxX, maxY := -math.MaxFloat64, -math.MaxFloat64
 
 	// find bounds of paths
 	for _, path := range s.Paths {
 		for _, command := range *path {
-			for _, point := range command.points {
-				minX = min(minX, point.X)
-				minY = min(minY, point.Y)
-				maxX = max(maxX, point.X)
-				maxY = max(maxY, point.Y)
+			if unicode.IsLower(command.letter) {
+				startPoint := command.points[0]
+				for _, point := range command.points[1:] {
+					startPoint.X += point.X
+					startPoint.Y += point.Y
+					minX = min(minX, startPoint.X)
+					minY = min(minY, startPoint.Y)
+					maxX = max(maxX, startPoint.X)
+					maxY = max(maxY, startPoint.Y)
+				}
+			} else {
+				for _, point := range command.points {
+					minX = min(minX, point.X)
+					minY = min(minY, point.Y)
+					maxX = max(maxX, point.X)
+					maxY = max(maxY, point.Y)
+				}
 			}
 		}
 	}
@@ -159,25 +178,25 @@ func (s *Schematic) Normalise() (width, height float64) {
 
 	// apply translation to all paths
 	for _, path := range s.Paths {
-		for i, pathCommand := range *path {
-			if unicode.IsLower(pathCommand.letter) {
+		for i, command := range *path {
+			if unicode.IsLower(command.letter) {
 				continue
 			}
 			for j := range (*path)[i].points {
-				(*path)[i].points[j].X -= minX - DefaultStrokeWidth
-				(*path)[i].points[j].Y -= minY - DefaultStrokeWidth
+				(*path)[i].points[j].X -= minX - DefaultStrokeWidth - padding
+				(*path)[i].points[j].Y -= minY - DefaultStrokeWidth - padding
 			}
 		}
 	}
 
 	// apply translation to all circles
 	for _, circle := range s.Circles {
-		circle.centerPos.X -= minX - DefaultStrokeWidth
-		circle.centerPos.Y -= minY - DefaultStrokeWidth
+		circle.centerPos.X -= minX - DefaultStrokeWidth - padding
+		circle.centerPos.Y -= minY - DefaultStrokeWidth - padding
 	}
 
-	width = maxX - minX + DefaultStrokeWidth*2
-	height = maxY - minY + DefaultStrokeWidth*2
+	width = maxX - minX + DefaultStrokeWidth*2 + padding*2
+	height = maxY - minY + DefaultStrokeWidth*2 + padding*2
 	return width, height
 }
 
