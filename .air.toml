@@ -1,5 +1,6 @@
 [build]
   exclude_dir = ["docs", "examples", "build"]
+  stop_on_error = true
 
 [log]
   time = true
