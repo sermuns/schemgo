@@ -77,13 +77,8 @@ The circuit diagram is created as `simple.svg`:
 - [x] Comments with `#`
 
 ### 🎯 High priority
-- [ ] Add support for relative pathcommmand movements (`q` instead of `Q` e.g.), currently rotating them FUCKS everythign.
 - [x] Handle piped content (stdin, stdout)
   - [ ] mdBook preprocessor
-- [ ] **Utilise polymorphism on components**
-  > Right now the situation is unmaintainable...
-  - [ ] Separate 'line' and 'point' components.
-  - [ ] Use interfaces!
 
 ### Normal priority
 - [ ] Components (I won't attempt before situation with polymorphsim is under control.)
@@ -94,7 +89,7 @@ The circuit diagram is created as `simple.svg`:
   - [ ] More components
     - [x] Battery
     - [x] Resistor
-    - [ ] Inductors
+    - [x] Inductors
     - [x] Capacitor
     - [x] Node (dot)
     - [ ] Voltage source
