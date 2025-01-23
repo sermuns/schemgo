@@ -89,7 +89,7 @@ func (s *Schematic) addPath(path Path) {
 
 func (s *Schematic) addCircle(x, y, radius float64, optionalStyle ...string) {
 	var style string
-	if len(style) > 0 {
+	if len(optionalStyle) > 0 {
 		style = optionalStyle[0]
 	} else {
 		style = fmt.Sprintf(`fill="black" stroke="black" stroke-width="%d"`, DefaultStrokeWidth)
