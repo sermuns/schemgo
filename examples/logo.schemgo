@@ -1,10 +1,11 @@
+sourceV
 resistor.right(2)
 dot
 push
 capacitor.down
 dot
 push
-line.left(2)
+inductor.left(2)
 pop
 line.right
 pop
