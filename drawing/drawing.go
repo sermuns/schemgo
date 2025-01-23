@@ -29,6 +29,7 @@ type Path []command
 type Circle struct {
 	centerPos Point
 	radius    float64
+	style     string
 }
 
 type Schematic struct {
@@ -86,10 +87,18 @@ func (s *Schematic) addPath(path Path) {
 	s.Paths = append(s.Paths, &path)
 }
 
-func (s *Schematic) addCircle(x, y, radius float64) {
+func (s *Schematic) addCircle(x, y, radius float64, optionalStyle ...string) {
+	var style string
+	if len(style) > 0 {
+		style = optionalStyle[0]
+	} else {
+		style = fmt.Sprintf(`fill="black" stroke="black" stroke-width="%d"`, DefaultStrokeWidth)
+	}
+
 	s.Circles = append(s.Circles, &Circle{
 		centerPos: Point{x, y},
 		radius:    radius,
+		style:     style,
 	})
 }
 
@@ -230,8 +239,8 @@ func (s *Schematic) End(buf *bytes.Buffer) {
 
 	for _, circle := range s.Circles {
 		buf.WriteString(fmt.Sprintf(
-			`<circle cx="%g" cy="%g" r="%g" fill="white" stroke="black" stroke-width="%d"></circle>`,
-			circle.centerPos.X, circle.centerPos.Y, circle.radius, DefaultStrokeWidth,
+			`<circle cx="%g" cy="%g" r="%g" %s></circle>`,
+			circle.centerPos.X, circle.centerPos.Y, circle.radius, circle.style,
 		))
 	}
 

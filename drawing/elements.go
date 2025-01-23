@@ -114,6 +114,47 @@ var ElemTypeToRenderFunc = map[string]func(*Schematic, Point, Point){
 			'L', Point{p1.X + distance, p1.Y},
 		))
 	},
+	"sourceV": func(s *Schematic, p1, p2 Point) {
+		const (
+			radius = DefaultLength / 8
+		)
+
+		s.addCircle(p1.X, p1.Y, radius, `fill="black"`)
+
+		// distance := p1.distanceTo(p2)
+
+		// s.addAndPivotPath(p1, p2, createPath(
+		// 	'M', Point{p1.X, p1.Y},
+		// 	'l', Point{distance/2 - width/2, 0},
+		//
+		// 	'q',
+		// 	Point{0, -coilLoopSize},
+		// 	Point{coilLoopSize, -coilLoopSize},
+		// 	'q',
+		// 	Point{coilLoopSize, 0},
+		// 	Point{coilLoopSize, coilLoopSize},
+		// 	'q',
+		// 	Point{0, -coilLoopSize},
+		// 	Point{coilLoopSize, -coilLoopSize},
+		// 	'q',
+		// 	Point{coilLoopSize, 0},
+		// 	Point{coilLoopSize, coilLoopSize},
+		// 	'q',
+		// 	Point{0, -coilLoopSize},
+		// 	Point{coilLoopSize, -coilLoopSize},
+		// 	'q',
+		// 	Point{coilLoopSize, 0},
+		// 	Point{coilLoopSize, coilLoopSize},
+		// 	'q',
+		// 	Point{0, -coilLoopSize},
+		// 	Point{coilLoopSize, -coilLoopSize},
+		// 	'q',
+		// 	Point{coilLoopSize, 0},
+		// 	Point{coilLoopSize, coilLoopSize},
+		//
+		// 	'L', Point{p1.X + distance, p1.Y},
+		// ))
+	},
 }
 
 var CommandTypeToFunc = map[string]func(*Schematic){
