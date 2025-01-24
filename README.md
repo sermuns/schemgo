@@ -79,6 +79,8 @@ The circuit diagram is created as `simple.svg`:
 ### 🎯 High priority
 - [x] Handle piped content (stdin, stdout)
   - [ ] mdBook preprocessor
+- [ ] Add labels
+  - [ ] `typst` math
 
 ### Normal priority
 - [ ] Components (I won't attempt before situation with polymorphsim is under control.)
@@ -102,8 +104,6 @@ The circuit diagram is created as `simple.svg`:
     - [ ] GND (and 5V)?
 - [ ] `@set` statement to change global defaults (stroke width, padding, color)
 - [ ] set standard (IEC, IEEE) on elemnt, using `set`
-- [ ] Labels
-  - [ ] `typst` math
 - [ ] Element attributes
   - [ ] ID for symbolic reference
 - [ ] Exporting to pdf, png, jpg, webp
