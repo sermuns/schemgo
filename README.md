@@ -79,8 +79,6 @@ The circuit diagram is created as `simple.svg`:
 - [x] mdBook preprocessor
 
 ### 🎯 High priority
-- [x] Handle piped content (stdin, stdout)
-  - [ ] mdBook preprocessor
 - [ ] Add labels
   - [ ] `typst` math
   - [ ] figure out ergonomic syntax.
