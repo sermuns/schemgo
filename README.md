@@ -81,6 +81,7 @@ The circuit diagram is created as `simple.svg`:
   - [ ] mdBook preprocessor
 - [ ] Add labels
   - [ ] `typst` math
+  - [ ] figure out ergonomic syntax.
 
 ### Normal priority
 - [ ] Components (I won't attempt before situation with polymorphsim is under control.)
