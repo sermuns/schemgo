@@ -85,6 +85,8 @@ The circuit diagram is created as `simple.svg`:
   - [ ] `typst` math
   - [ ] figure out ergonomic syntax.
 - [ ] multiple terminal: named anchors on components?
+- [x] Handle piped content (stdin, stdout)
+  - [ ] mdBook preprocessor
 
 ### Normal priority
 - [ ] Components (I won't attempt before situation with polymorphsim is under control.)
