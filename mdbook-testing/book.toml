@@ -1,0 +1,12 @@
+[book]
+authors = ["Samuel Åkesson"]
+language = "en"
+multilingual = false
+src = "src"
+title = "schemgo-testing"
+
+[build]
+build-dir = "build"
+
+[preprocessor.schemgo]
+command = "go run .. mdbook"
