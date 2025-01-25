@@ -9,29 +9,25 @@ import (
 	"github.com/sermuns/schemgo/parsing"
 )
 
-func performAction(s *drawing.Schematic, action parsing.Action) {
-	value := action.Units * drawing.UnitLength
+func performMove(s *drawing.Schematic, move parsing.Movement) {
+	value := move.Units * drawing.UnitLength
 	if value == 0 {
 		value = drawing.DefaultLength
 	}
 
-	switch action.Type {
-	case "right":
-		s.Translate(value, 0)
-	case "up":
-		s.Translate(0, -value)
-	case "left":
-		s.Translate(-value, 0)
-	case "down":
-		s.Translate(0, value)
+	moveFunc, ok := drawing.MovementFuncs[move.Type]
+	if !ok {
+		fmt.Printf("unimplemented movement type: %s\n", move.Type)
+		os.Exit(1)
 	}
 
+	moveFunc(s, value)
 }
 
 func renderElem(s *drawing.Schematic, elem *parsing.Element) {
 	p1 := s.Pos
-	for _, action := range elem.Actions {
-		performAction(s, action)
+	for _, move := range elem.Movements {
+		performMove(s, move)
 	}
 	p2 := s.Pos
 

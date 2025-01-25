@@ -21,7 +21,8 @@ type Entry struct {
 type Element struct {
 	Type       string     `@Element`
 	Properties []Property `('(' (@@ (',' @@)*)? ')')?`
-	Actions    []Action   `( @@+ )?`
+	Movements  []Movement `( @@+ )?`
+	Labels     []Label    `( ".label" '(' @@ ')' )*`
 }
 
 type Command struct {
@@ -34,9 +35,14 @@ type Property struct {
 	Value string `@String`
 }
 
-type Action struct {
-	Type  string  `'.' @Ident`
-	Units float64 `('(' @Number? ')')?`
+type Movement struct {
+	Type  string  `'.' @Movement`
+	Units float64 `( '(' @Number ')')?`
+}
+
+type Label struct {
+	Content string `@String`
+	// Placement string `(, @Ident)?`
 }
 
 func mapKeysStringJoin[V any](m map[string]V) string {
@@ -47,6 +53,7 @@ var (
 	schemGoLexer = lexer.MustSimple([]lexer.SimpleRule{
 		{"Element", `(` + mapKeysStringJoin(drawing.ElemTypeToRenderFunc) + `)`},
 		{"Command", `(` + mapKeysStringJoin(drawing.CommandTypeToFunc) + `)`},
+		{"Movement", `(` + mapKeysStringJoin(drawing.MovementFuncs) + `)`},
 		{"Ident", `[a-zA-Z_][a-zA-Z_0-9]*`},
 		{"String", `"[^"]*"`},
 		{"Number", `[-+]?[.0-9]+\b`},

@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"time"
 )
 
 func main() {
@@ -17,12 +18,17 @@ func main() {
 
 	inp.WriteString(args[1])
 
-	cmd := exec.Command("typst", "compile", "--format", "svg", "-", "-")
+	cmd := exec.Command("typst", "compile", "--format", "svg", "-", "out.svg")
 	cmd.Stdin = inp
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
-
 	err := cmd.Run()
+	time.Sleep(time.Second)
+	inp.WriteString(args[1])
+	time.Sleep(time.Second)
+	inp.WriteString(args[1])
+	time.Sleep(time.Second)
+	inp.WriteString(args[1])
 	if err != nil {
 		log.Fatal(err)
 	}

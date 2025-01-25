@@ -1,4 +1,4 @@
-battery.right.label("$30", top)
+battery.right.label("$30 ohm$")
 line.up
 resistor.left
 line.down
