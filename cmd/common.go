@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/sermuns/schemgo/drawing"
 	"github.com/sermuns/schemgo/parsing"
@@ -69,6 +70,7 @@ func writeSchematic(inContents []byte) (outContent []byte) {
 		renderElem(s, &entry.Element)
 	}
 	var buf bytes.Buffer
+	time.Sleep(time.Second)
 	s.End(&buf)
 	return buf.Bytes()
 }
