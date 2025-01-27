@@ -6,6 +6,7 @@ nav:
   - Installation: installation.md
   - Tutorial:
     - Getting started: getting-started.md
+    - "mdBook preprocessor": mdbook.md
   - Reference:
     - Components: components.md
   - Examples: examples.md

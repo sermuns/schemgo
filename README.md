@@ -20,7 +20,7 @@ The language is very minimal and heavily inspired by Schemdraw's.
 
 This ships as a single binary, and is blazingly fast.
 
-**NOT YET IMPLEMENTED:** Is easily included in mdbook as preprocessor.
+[Is easily included in `mdbook` as a preprocessor!](https://schemgo.samake.se/mdbook)
 
 ## Quickstart
 
@@ -36,7 +36,8 @@ go install github.com/sermuns/schemgo
 
 Create a file `simple.schemgo` containing:
 
-```python
+<!-- abusing linguist syntax highlighting.. this is NOT haskell -->
+```haskell
 battery.right
 line.up
 resistor.left
@@ -75,6 +76,7 @@ The circuit diagram is created as `simple.svg`:
   - [x] `build` exports svg file
   - [x] `serve` serves a development website for live-preview
 - [x] Comments with `#`
+- [x] mdBook preprocessor
 
 ### 🎯 High priority
 - [x] Handle piped content (stdin, stdout)
@@ -82,13 +84,12 @@ The circuit diagram is created as `simple.svg`:
 - [ ] Add labels
   - [ ] `typst` math
   - [ ] figure out ergonomic syntax.
+- [ ] multiple terminal: named anchors on components?
 
 ### Normal priority
 - [ ] Components (I won't attempt before situation with polymorphsim is under control.)
   - [ ] Optional style string on tags
   - [ ] (Better way of defining appearances... maybe external files?)
-  - [ ] multiple terminal: named anchors on components?
-
   - [ ] More components
     - [x] Battery
     - [x] Resistor
