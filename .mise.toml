@@ -11,4 +11,4 @@ run = 'go run . serve'
 
 [tasks.clean]
 alias = 'c'
-run = 'rm -rf schemgo tmp/ $GOBIN/schemgo'
+run = 'rm -rf schemgo ./*.svg tmp/ $GOBIN/schemgo'
