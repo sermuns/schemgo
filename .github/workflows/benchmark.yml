@@ -18,10 +18,13 @@ jobs:
       - name: Setup | Checkout
         uses: actions/checkout@v4
 
-      - name: Setup | Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: 'stable'
+      - name: Setup | Tools
+        uses: jdx/mise-action@v2
+
+      # - name: Setup | Go
+      #   uses: actions/setup-go@v5
+      #   with:
+      #     go-version: 'stable'
 
       - name: Benchmark
         run: |
