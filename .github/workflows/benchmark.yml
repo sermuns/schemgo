@@ -20,6 +20,8 @@ jobs:
 
       - name: Setup | Tools
         uses: jdx/mise-action@v2
+        with:
+          experimental: true
 
       # - name: Setup | Go
       #   uses: actions/setup-go@v5
