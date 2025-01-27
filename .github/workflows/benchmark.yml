@@ -1,0 +1,29 @@
+name: Benchmark
+
+concurrency:
+  group: release
+  cancel-in-progress: true
+
+env:
+  REPO_NAME: schemgo
+
+on: [push, pull_request]
+
+jobs:
+  bench:
+    name: Benchmark code
+    runs-on: ubuntu-24.04
+    steps:
+
+      - name: Setup | Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup | Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 'stable'
+
+      - name: Benchmark
+        run:
+          - "go test -bench=. -count=10 -run=^a  ./... >bench.txt"
+          - "benchstat bench.txt"
