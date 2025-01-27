@@ -1,99 +1,74 @@
 package cmd
 
 import (
-	// "bytes"
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"os"
 
 	"github.com/spf13/cobra"
 )
 
-type Config struct {
-	Root   string `json:"root"`
-	Config struct {
-		Book struct {
-			Authors      []string `json:"authors"`
-			Language     string   `json:"language"`
-			Multilingual bool     `json:"multilingual"`
-			Src          string   `json:"src"`
-			Title        string   `json:"title"`
-		} `json:"book"`
-		Preprocessor map[string]struct {
-			Command string `json:"command"`
-		} `json:"preprocessor"`
-	} `json:"config"`
-	Renderer      string `json:"renderer"`
-	MdbookVersion string `json:"mdbook_version"`
+type Chapter struct {
+	Name        string   `json:"name"`
+	Content     string   `json:"content"`
+	Number      []int    `json:"number"`
+	SubItems    []string `json:"sub_items"`
+	Path        string   `json:"path"`
+	SourcePath  string   `json:"source_path"`
+	ParentNames []string `json:"parent_names"`
 }
 
 type Section struct {
-	Chapter struct {
-		Name        string   `json:"name"`
-		Content     string   `json:"content"`
-		Number      []int    `json:"number"`
-		SubItems    []string `json:"sub_items"`
-		Path        string   `json:"path"`
-		SourcePath  string   `json:"source_path"`
-		ParentNames []string `json:"parent_names"`
-	} `json:"Chapter"`
+	Chapter Chapter `json:"Chapter"`
 }
 
-type Data struct {
+type Config struct {
 	Sections      []Section `json:"sections"`
-	NonExhaustive any       `json:"__non_exhaustive"`
+	NonExhaustive *string   `json:"__non_exhaustive"`
+}
+
+// find ```schemgo ``` md code blocks, run them through the schemgo processor.
+// replace entire block (including ticks) with the output of processor
+func processSection(section *Section){
+	// go throuhg line-by-line, find
+	// ```schemgo
+	
+
 }
 
 var mdbookCmd = &cobra.Command{
 	Use:   "mdbook",
 	Short: "Act as mdBook preprocessor. You probably don't want to manually use this!",
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) > 1 && args[1] == "supports" {
+		if len(args) > 1 && args[0] == "supports" {
 			os.Exit(0)
 		}
 
-		stdin, err := io.ReadAll(os.Stdin)
+		stdInput, err := io.ReadAll(cmd.InOrStdin())
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Failed to read stdin: %v\n", err)
 			os.Exit(1)
 		}
 
-		os.WriteFile("input.json", stdin, 0644)
-		return
-
-		var input []any
-		err = json.Unmarshal(stdin, &input)
+		var jsonData []Config
+		err = json.Unmarshal(stdInput, &jsonData)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Failed to unmarshal stdin: %v\n", err)
-			os.Exit(1)
+			log.Fatal(err)
 		}
 
-		book, err := json.Marshal(input[1])
+		book := jsonData[1]
+		for i := range book.Sections{
+			processSection(&book.Sections[i])
+		}
+
+		modifiedJson, err := json.MarshalIndent(jsonData[1], "", "  ")
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Failed to marshal book: %v\n", err)
-			os.Exit(1)
+			log.Fatal(err)
 		}
 
-		var data Data
-		err = json.Unmarshal(book, &data)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Failed to unmarshal book: %v\n", err)
-			os.Exit(1)
-		}
-
-		for i := range data.Sections {
-			data.Sections[i].Chapter.Content = "Hello, World!"
-		}
-
-		output, err := json.Marshal(data)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Failed to marshal updated data: %v\n", err)
-			os.Exit(1)
-		}
-
-		os.WriteFile("output.json", output, 0644)
-
+		fmt.Println(string(modifiedJson))
 	},
 }
 
