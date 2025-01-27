@@ -1,5 +1,6 @@
 [tools]
 air = "latest"
+"go:golang.org/x/perf/cmd/..." = "latest"
 
 [tasks.build]
 alias = 'b'

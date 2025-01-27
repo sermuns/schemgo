@@ -1,3 +1,5 @@
 build/
 tmp/
 /*.svg
+
+bench.txt
