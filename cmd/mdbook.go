@@ -1,11 +1,13 @@
 package cmd
 
 import (
+	"bufio"
 	"encoding/json"
 	"fmt"
 	"io"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -31,11 +33,31 @@ type Config struct {
 
 // find ```schemgo ``` md code blocks, run them through the schemgo processor.
 // replace entire block (including ticks) with the output of processor
-func processSection(section *Section){
-	// go throuhg line-by-line, find
-	// ```schemgo
-	
+func processSection(section *Section) {
+	var processed strings.Builder
+	scanner := bufio.NewScanner(strings.NewReader(section.Chapter.Content))
+	var schemgoContent []byte
 
+	for scanner.Scan() {
+		line := scanner.Text()
+		if !strings.HasPrefix(line, "```schemgo") {
+			processed.WriteString(line + "\n")
+			continue
+		}
+
+		schemgoContent = []byte{}
+		for scanner.Scan() {
+			line := scanner.Text()
+			if strings.HasPrefix(line, "```") {
+				break
+			}
+			schemgoContent = append(schemgoContent, []byte(line+"\n")...)
+		}
+		processed.Write(writeSchematic(schemgoContent))
+		processed.WriteString("\n")
+	}
+
+	section.Chapter.Content = processed.String()
 }
 
 var mdbookCmd = &cobra.Command{
@@ -59,16 +81,16 @@ var mdbookCmd = &cobra.Command{
 		}
 
 		book := jsonData[1]
-		for i := range book.Sections{
+		for i := range book.Sections {
 			processSection(&book.Sections[i])
 		}
 
-		modifiedJson, err := json.MarshalIndent(jsonData[1], "", "  ")
+		out, err := json.Marshal(book)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		fmt.Println(string(modifiedJson))
+		fmt.Print(string(out))
 	},
 }
 
