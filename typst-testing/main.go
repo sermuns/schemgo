@@ -1,15 +1,19 @@
 package main
 
 import (
-	"bytes"
+	"fmt"
 	"log"
 	"os"
 	"os/exec"
+	"strings"
+	"sync"
 	"time"
 )
 
 func main() {
-	inp := bytes.NewBufferString("#set page(width: auto, height: auto, margin: 0cm, fill: none)\n")
+	start := time.Now()
+	var inp strings.Builder
+	inp.WriteString("#set page(width: auto, height: auto, fill: none)\n")
 
 	args := os.Args
 	if len(args) < 2 {
@@ -18,18 +22,22 @@ func main() {
 
 	inp.WriteString(args[1])
 
-	cmd := exec.Command("typst", "compile", "--format", "svg", "-", "out.svg")
-	cmd.Stdin = inp
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	err := cmd.Run()
-	time.Sleep(time.Second)
-	inp.WriteString(args[1])
-	time.Sleep(time.Second)
-	inp.WriteString(args[1])
-	time.Sleep(time.Second)
-	inp.WriteString(args[1])
-	if err != nil {
-		log.Fatal(err)
+	var wg sync.WaitGroup
+	for i := 0; i < 50; i++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			cmd := exec.Command("typst", "compile", "--format", "svg", "-", "-")
+			cmd.Stdin = strings.NewReader(inp.String())
+			// cmd.Stdout = os.Stdout
+			// cmd.Stderr = os.Stderr
+			err := cmd.Run()
+			if err != nil {
+				log.Fatal(err)
+			}
+		}()
 	}
+	wg.Wait()
+
+	fmt.Println("Took", time.Since(start))
 }
