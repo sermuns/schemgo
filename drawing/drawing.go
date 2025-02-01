@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math"
 	"os"
+	"strconv"
 	"strings"
 	"unicode"
 )
@@ -211,38 +212,55 @@ func (s *Schematic) Normalise() (width, height float64) {
 
 func (c *command) asString() string {
 	var sb strings.Builder
-	sb.WriteString(fmt.Sprintf("%c", c.letter))
+
+	sb.WriteByte(byte(c.letter))
 	for _, point := range c.points {
-		sb.WriteString(fmt.Sprintf(" %g,%g ", point.X, point.Y))
+		sb.WriteByte(' ')
+		sb.Write(strconv.AppendFloat(nil, point.X, 'f', -1, 64))
+		sb.WriteByte(',')
+		sb.Write(strconv.AppendFloat(nil, point.Y, 'f', -1, 64))
+		sb.WriteByte(' ')
 	}
+
 	return sb.String()
 }
 
-func (s *Schematic) End(buf *bytes.Buffer) {
+func (s *Schematic) End() []byte {
 	width, height := s.Normalise()
 
-	buf.WriteString(fmt.Sprintf(
-		`<svg width='%d' height='%d' xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1">`,
-		int(width), int(height),
-	))
+	var buf bytes.Buffer
 
+	buf.WriteString(`<svg width="`)
+	buf.Write(strconv.AppendInt(nil, int64(width), 10))
+	buf.WriteString(`" height="`)
+	buf.Write(strconv.AppendInt(nil, int64(height), 10))
+	buf.WriteString(`" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1">`)
+
+	// Write paths
 	for _, path := range s.Paths {
 		buf.WriteString(`<path d="`)
 		for _, pathCommand := range *path {
 			buf.WriteString(pathCommand.asString())
 		}
-		buf.WriteString(fmt.Sprintf(
-			`" style="stroke:black; stroke-width:%d; stroke-linecap: square; fill:none;"></path>`,
-			DefaultStrokeWidth,
-		))
+		buf.WriteString(`" style="stroke:black; stroke-width:`)
+		buf.Write(strconv.AppendInt(nil, int64(DefaultStrokeWidth), 10))
+		buf.WriteString(`; stroke-linecap: square; fill:none;"></path>`)
 	}
 
+	// Write circles
 	for _, circle := range s.Circles {
-		buf.WriteString(fmt.Sprintf(
-			`<circle cx="%g" cy="%g" r="%g" %s></circle>`,
-			circle.centerPos.X, circle.centerPos.Y, circle.radius, circle.style,
-		))
+		buf.WriteString(`<circle cx="`)
+		buf.Write(strconv.AppendFloat(nil, circle.centerPos.X, 'f', -1, 64))
+		buf.WriteString(`" cy="`)
+		buf.Write(strconv.AppendFloat(nil, circle.centerPos.Y, 'f', -1, 64))
+		buf.WriteString(`" r="`)
+		buf.Write(strconv.AppendFloat(nil, circle.radius, 'f', -1, 64))
+		buf.WriteString(`" `)
+		buf.WriteString(circle.style)
+		buf.WriteString(`></circle>`)
 	}
 
 	buf.WriteString("</svg>")
+
+	return buf.Bytes()
 }
