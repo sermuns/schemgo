@@ -23,12 +23,5 @@ jobs:
         with:
           experimental: true
 
-      # - name: Setup | Go
-      #   uses: actions/setup-go@v5
-      #   with:
-      #     go-version: 'stable'
-
       - name: Benchmark
-        run: |
-          go test -bench=. -count=10 -run=^a  ./... >bench.txt
-          benchstat bench.txt
+        run: mise bench

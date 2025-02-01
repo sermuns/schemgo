@@ -1,10 +1,8 @@
 package cmd
 
 import (
-	"bytes"
 	"fmt"
 	"os"
-	"time"
 
 	"github.com/sermuns/schemgo/drawing"
 	"github.com/sermuns/schemgo/parsing"
@@ -38,11 +36,10 @@ func renderElem(s *drawing.Schematic, elem *parsing.Element) {
 		os.Exit(1)
 	}
 	renderFunc(s, p1, p2)
-
 }
 
 func performCommand(s *drawing.Schematic, command parsing.Command) bool {
-	if len(command.Type) == 0 {
+	if command.Type == "" {
 		return false
 	}
 
@@ -57,11 +54,12 @@ func performCommand(s *drawing.Schematic, command parsing.Command) bool {
 
 func writeSchematic(inContents []byte) (outContent []byte) {
 	parsedSchematic := parsing.MustReadSchematic(inContents, "")
-	s := drawing.NewSchematic()
 	if len(parsedSchematic.Entries) == 0 {
 		fmt.Printf("No entries in schematic, can't build\n")
 		os.Exit(1)
 	}
+
+	s := drawing.NewSchematic()
 
 	for _, entry := range parsedSchematic.Entries {
 		if performCommand(s, entry.Command) {
@@ -69,8 +67,6 @@ func writeSchematic(inContents []byte) (outContent []byte) {
 		}
 		renderElem(s, &entry.Element)
 	}
-	var buf bytes.Buffer
-	time.Sleep(time.Second)
-	s.End(&buf)
-	return buf.Bytes()
+
+	return s.End()
 }

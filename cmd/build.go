@@ -15,8 +15,6 @@ var buildCmd = &cobra.Command{
 	Long: `Example:
 $ schemgo build examples/simple.schemgo -o simple.svg`,
 	Run: func(cmd *cobra.Command, args []string) {
-		start := time.Now()
-
 		inFilePath := args[0]
 		outFilePath, _ := cmd.Flags().GetString("output")
 
@@ -26,10 +24,10 @@ $ schemgo build examples/simple.schemgo -o simple.svg`,
 			os.Exit(1)
 		}
 
+		start := time.Now()
 		written := writeSchematic(inContent)
+		fmt.Printf("Generated string in %s\n", time.Since(start))
 		os.WriteFile(outFilePath, written, os.ModePerm)
-
-		fmt.Printf("Parsed `%s` in %s\n", inFilePath, time.Since(start))
 	},
 }
 
