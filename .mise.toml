@@ -17,5 +17,5 @@ run = 'rm -rf schemgo ./bench.txt ./*.svg tmp/ $GOBIN/schemgo'
 
 [tasks.bench]
 run = """
-go test -bench=. ./...
+benchstat <(go test -bench=. -count=8 -run=^a ./...)
 """
