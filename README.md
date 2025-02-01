@@ -79,18 +79,10 @@ The circuit diagram is created as `simple.svg`:
 - [x] mdBook preprocessor
 
 ### 🎯 High priority
-<<<<<<< HEAD
 - [ ] Add labels
   - [ ] `typst` math
   - [ ] figure out ergonomic syntax.
 - [ ] multiple terminal: named anchors on components?
-- [x] Handle piped content (stdin, stdout)
-  - [ ] mdBook preprocessor
-=======
-- [ ] Labels
-  - [ ] `typst` math
-- [ ] multiple terminal: named anchors on components?
->>>>>>> main
 
 ### Normal priority
 - [ ] Components (I won't attempt before situation with polymorphsim is under control.)
