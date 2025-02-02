@@ -16,6 +16,5 @@ alias = 'c'
 run = 'rm -rf schemgo ./bench.txt ./*.svg tmp/ $GOBIN/schemgo'
 
 [tasks.bench]
-run = """
-benchstat <(go test -bench=. -count=8 -run=^a ./...)
-"""
+shell = 'bash -c'
+run = "benchstat <(go test -bench=. -count=8 -run=^a ./...)"
