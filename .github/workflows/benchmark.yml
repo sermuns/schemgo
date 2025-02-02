@@ -7,7 +7,15 @@ concurrency:
 env:
   REPO_NAME: schemgo
 
-on: [push, pull_request]
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/benchmark.yml'
+      - '**/*.go'
+  workflow_dispatch:
 
 jobs:
   bench:
