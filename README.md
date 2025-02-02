@@ -10,19 +10,17 @@
 > [!NOTE]
 > This tool is under active development and is not currently in a usable state. Stay tuned!
 
-## What is this?
+## ❓ What is this?
 
-This tool generates electrical circuit schematic diagram from code, such as [Schemdraw](https://schemdraw.readthedocs.io/en/stable/) and [circuitikz](https://github.com/circuitikz/circuitikz).
+A command line utility that generates circuit schematic diagrams from code. Think [Schemdraw](https://schemdraw.readthedocs.io/en/stable/) or [circuitikz](https://github.com/circuitikz/circuitikz), but simpler and faster!
 
-The language is very minimal and heavily inspired by Schemdraw's.
+### Why choose this over Schemdraw/circuitikz?
 
-## Why choose this over Schemdraw/circuitikz?
+- Is a self-contained binary.
+- Is _blazingly_ fast.
+- [Is easily included in `mdbook` as a preprocessor](https://schemgo.samake.se/mdbook)
 
-This ships as a single binary, and is blazingly fast.
-
-[Is easily included in `mdbook` as a preprocessor!](https://schemgo.samake.se/mdbook)
-
-## Quickstart
+## 🌱 Quickstart
 
 ```sh
 go install github.com/sermuns/schemgo
@@ -30,14 +28,13 @@ go install github.com/sermuns/schemgo
 
 [Many other installation methods are supported!](https://schemgo.samake.se/installation)
 
-`schemgo` is now available in the shell, provided you have `$GOPATH/bin` (`$GOBIN`) in your `PATH`.
-
-## Example usage
+## 💡 A simple example
 
 Create a file `simple.schemgo` containing:
 
-<!-- abusing linguist syntax highlighting.. this is NOT haskell -->
-```haskell
+<!-- abusing linguist syntax highlighting.. -->
+
+```python
 battery.right
 line.up
 resistor.left
@@ -53,24 +50,27 @@ schemgo build simple.schemgo -o simple.svg
 The circuit diagram is created as `simple.svg`:
 
 <div align="center">
-<a href="media/simple.svg"><img src="media/simple.webp" alt="simple circuit" align="center" /></a>
+<a href="media/simple.svg"><img src="media/simple.webp" alt="simple circuit"/></a>
 </div>
 
 > [!NOTE]
 > Only svg output is supported at the moment.
 
-<br>
-<br>
-<br>
+## 📚 Documentation
+
+See [schemgo.samake.se](https://schemgo.samake.se)
+
+<hr>
 <br>
 <br>
 <br>
 <br>
 
----
 
-## Roadmap
-### ✅ Done
+## 🗺️ Roadmap
+
+### ✔️ Done
+
 - [x] Push and pop
 - [x] Subcommands
   - [x] `build` exports svg file
@@ -78,12 +78,14 @@ The circuit diagram is created as `simple.svg`:
 - [x] Comments with `#`
 - [x] mdBook preprocessor
 
-### 🎯 High priority
+### 🔴 High priority
+
 - [ ] Labels
   - [ ] `typst` math
 - [ ] multiple terminal: named anchors on components?
 
-### Normal priority
+### 🟡 Normal priority
+
 - [ ] Components (I won't attempt before situation with polymorphsim is under control.)
   - [ ] Optional style string on tags
   - [ ] (Better way of defining appearances... maybe external files?)
