@@ -2,6 +2,7 @@
 <img src="media/banner.svg" />
 <h1><code>schemgo</code></h1>
 <p><em>Let the gophers put your schematic to paper!</em></p>
+<a href="https://github.com/sermuns/schemgo/releases/latest"><img alt="release-badge" src="https://img.shields.io/github/v/release/sermuns/schemgo.svg"></a>
 <a href="https://goreportcard.com/report/github.com/sermuns/schemgo"><img alt="goreportcard-badge" src="https://goreportcard.com/badge/github.com/sermuns/schemgo"></a>
 <a href="https://www.gnu.org/licenses/gpl-3.0">
 <img alt="license-badge" src="https://img.shields.io/badge/License-GPLv3-blue.svg"></a>
