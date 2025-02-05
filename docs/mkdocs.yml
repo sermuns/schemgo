@@ -1,5 +1,8 @@
 site_name: schemgo
 
+repo_name: sermuns/schemgo
+repo_url: https://github.com/sermuns/schemgo
+
 nav:
   - Home: index.md
   - Overview: overview.md
@@ -33,11 +36,8 @@ theme:
       toggle:
         icon: material/weather-night
         name: Switch to light mode
-
-extra:
-  social:
-    - icon: fontawesome/brands/github 
-      link: https://github.com/sermuns/schemgo
+  icon:
+    repo: fontawesome/brands/github
 
 markdown_extensions:
   - footnotes
