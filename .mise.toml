@@ -1,7 +1,6 @@
 [tools]
 air = "latest"
 go = "latest"
-"go:golang.org/x/perf/cmd/benchstat" = "latest"
 
 [tasks.build]
 alias = 'b'
@@ -17,4 +16,4 @@ run = 'rm -rf schemgo ./bench.txt ./*.svg tmp/ $GOBIN/schemgo'
 
 [tasks.bench]
 shell = 'bash -c'
-run = "benchstat <(go test -bench=. -count=8 -run=^a ./...)"
+run = "go tool benchstat <(go test -bench=. -count=8 -run=^a ./...)"
