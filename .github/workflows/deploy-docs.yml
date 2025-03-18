@@ -25,13 +25,9 @@ jobs:
 
       - name: Install tools
         uses: jdx/mise-action@v2
-        with:
-          working_directory: docs
 
       - name: Build documentation
-        run: |
-          cd docs
-          mkdocs build
+        run: mkdocs build
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
@@ -39,7 +35,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "docs/public"
+          path: public
 
       - name: Deploy to Pages
         id: deployment
