@@ -1,7 +1,8 @@
 [tools]
+uv = "latest"
 air = "latest"
 go = "latest"
-"pipx:mkdocs" = { version = "latest", extras = "mkdocs-material" }
+"pipx:mkdocs" = { version = "latest", uvx_args = "--with mkdocs-material" }
 
 [tasks.build]
 alias = 'b'
