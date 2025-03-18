@@ -1,5 +1,11 @@
+# temp code stuff
 build/
 tmp/
 /*.svg
 
+# benchmark
 bench.txt
+
+# docs
+public/
+!docs/*.svg

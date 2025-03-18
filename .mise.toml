@@ -1,6 +1,7 @@
 [tools]
 air = "latest"
 go = "latest"
+"pipx:mkdocs" = { version = "latest", extras = "mkdocs-material" }
 
 [tasks.build]
 alias = 'b'

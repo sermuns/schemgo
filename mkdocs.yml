@@ -3,6 +3,8 @@ site_name: schemgo
 repo_name: sermuns/schemgo
 repo_url: https://github.com/sermuns/schemgo
 
+site_dir: public
+
 nav:
   - Home: index.md
   - Overview: overview.md
@@ -14,8 +16,6 @@ nav:
     - Components: components.md
   - Examples: examples.md
 
-docs_dir: src
-site_dir: public
 extra_css:
   - style.css
 
