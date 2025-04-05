@@ -1,3 +1,5 @@
+# yaml-language-server: $schema=https://squidfunk.github.io/mkdocs-material/schema.json
+
 site_name: schemgo
 
 repo_name: sermuns/schemgo
@@ -38,6 +40,9 @@ theme:
         name: Switch to light mode
   icon:
     repo: fontawesome/brands/github
+  font:
+    text: Inter
+    code: JetBrains Mono
 
 markdown_extensions:
   - footnotes
